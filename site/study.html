@@ -1,0 +1,1423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Adwiyati · Questionnaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@600;700&family=Noto+Nastaliq+Urdu:wght@400;600&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   STUDY QUESTIONNAIRE — ph6.48 (randomised design, protocol v8)
+
+   One questionnaire, the same in both arms of the trial. The patient answers
+   it alone on the counter iPad, in their own language, straight after
+   dispensing, with the medicine in hand. The same page carries the day 5–7
+   follow-up form, opened from the link in the follow-up message (#f=).
+
+   The answer key never comes to this page. Answers go up; scoring is done
+   in the database, and the patient never sees a score. The page does not
+   know which arm the patient is in.
+   ========================================================================== */
+:root{
+  --basalt:#3E423A; --basalt-d:#2F332C; --render:#F4F1E8; --card:#FDFBF5;
+  --timber:#9A7550; --timber-d:#7A5936; --gold:#96774E; --green:#4E6B3F;
+  --alarm:#B4531F; --line:#E4DECD; --line-2:#EFEADC; --ink:#2A2E27; --soft:#79806F;
+  --sel:#EAF0E4;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--render);color:var(--ink);-webkit-font-smoothing:antialiased;
+     font-family:'Inter',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;
+     overscroll-behavior:none;touch-action:manipulation}
+body.rtl{font-family:'IBM Plex Sans Arabic',system-ui,sans-serif}
+body.lang-ur{font-family:'Noto Nastaliq Urdu',serif}
+body.lang-bn{font-family:'Noto Sans Bengali',sans-serif}
+body.lang-hi{font-family:'Noto Sans Devanagari',sans-serif}
+body.lang-ja{font-family:'Hiragino Sans','Yu Gothic','Noto Sans JP',sans-serif}
+body.lang-zh{font-family:'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif}
+button{font:inherit;color:inherit}
+
+.app{min-height:100%;display:grid;grid-template-rows:auto auto 1fr auto}
+
+/* top band: the same stone as the patient page, so the device looks like
+   part of the service and not like a survey from somewhere else */
+.top{background:var(--basalt);color:#F4F1E8;display:flex;align-items:center;gap:14px;
+     padding:max(14px,env(safe-area-inset-top)) 22px 14px}
+.brand{display:flex;align-items:baseline;gap:10px;font-weight:700;letter-spacing:.2px}
+.brand .ar{font-family:'Noto Kufi Arabic',sans-serif;font-size:22px}
+.brand .en{font-family:'Inter',sans-serif;font-size:15px;opacity:.75}
+.top .sp{flex:1}
+.part{font-size:13px;letter-spacing:.4px;text-transform:uppercase;opacity:.8;font-family:'Inter',sans-serif}
+.langBtn{background:transparent;border:1px solid rgba(244,241,232,.35);color:#F4F1E8;border-radius:999px;
+         padding:7px 14px;font-size:15px;cursor:pointer;display:flex;gap:8px;align-items:center}
+.langBtn svg{opacity:.85}
+
+.bar{height:5px;background:rgba(0,0,0,.08)}
+.bar i{display:block;height:100%;background:var(--timber);width:0;transition:width .35s ease}
+
+main{width:100%;max-width:860px;margin:0 auto;padding:30px 22px 40px;display:flex;flex-direction:column;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px 30px 26px;
+      box-shadow:0 1px 0 rgba(0,0,0,.02),0 10px 30px -18px rgba(62,66,58,.35)}
+.kicker{display:flex;align-items:center;gap:10px;color:var(--soft);font-size:15px;margin-bottom:12px}
+.med{display:inline-flex;align-items:center;gap:8px;background:var(--line-2);border-radius:999px;
+     padding:6px 14px;font-weight:600;color:var(--ink);font-size:15px}
+.med svg{color:var(--timber)}
+h1{font-size:30px;line-height:1.35;margin:4px 0 10px;font-weight:700}
+body.lang-ur h1{line-height:2;font-weight:600}
+.lead{font-size:19px;line-height:1.65;color:#4A4F45;margin:0 0 6px}
+body.lang-ur .lead{line-height:2.2}
+
+.qhead{display:flex;gap:14px;align-items:flex-start;justify-content:space-between}
+.say{flex:0 0 auto;display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:#fff;
+     border-radius:999px;padding:9px 15px;font-size:15px;cursor:pointer;color:var(--basalt)}
+.say[aria-pressed="true"]{border-color:var(--timber);color:var(--timber-d);background:#FBF6EC}
+.say[hidden]{display:none}
+
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:22px}
+.opts.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.opts.one{grid-template-columns:1fr}
+.opt{position:relative;display:flex;align-items:center;gap:14px;min-height:78px;padding:14px 18px;
+     border:2px solid var(--line);border-radius:14px;background:#fff;cursor:pointer;text-align:start;
+     font-size:20px;line-height:1.35;transition:border-color .12s,background .12s,transform .06s}
+body.lang-ur .opt{line-height:1.9}
+.opt:active{transform:scale(.985)}
+.opt .n{font-size:34px;font-weight:700;min-width:44px;text-align:center;color:var(--basalt);
+        font-family:'Inter',sans-serif}
+body.lang-bn .opt .n,body.rtl .opt .n{font-family:inherit}
+.opt .ic{flex:0 0 auto;width:40px;height:40px;display:grid;place-items:center;border-radius:10px;
+         background:var(--line-2);color:var(--basalt)}
+.opt.big{justify-content:center;font-size:22px}
+.opt.big .n{font-size:40px}
+.opt.dk{color:var(--soft);font-size:18px;border-style:dashed}
+.opt[aria-checked="true"]{border-color:var(--green);background:var(--sel)}
+.opt[aria-checked="true"]::after{content:"";position:absolute;inset-inline-end:12px;top:12px;width:22px;height:22px;
+  border-radius:50%;background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/14px no-repeat}
+
+/* the number pad: our own, because the iPad keyboard covers half the
+   question, offers letters, and is a second thing to learn */
+.padWrap{margin-top:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,300px);gap:18px;align-items:start}
+.padWrap[hidden]{display:none}
+.readout{border:2px solid var(--line);border-radius:14px;background:#fff;min-height:86px;display:flex;
+         align-items:center;justify-content:center;gap:12px;font-size:42px;font-weight:700;font-family:'Inter',sans-serif}
+.readout .u{font-size:20px;font-weight:500;color:var(--soft)}
+body.rtl .readout .u,body.lang-bn .readout .u{font-family:inherit}
+.readout.empty{color:#C9C2AF}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;direction:ltr}
+.pad button{height:62px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:26px;
+            font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.pad button:active{background:var(--line-2)}
+.pad button[disabled]{visibility:hidden}
+
+.foot{position:sticky;bottom:0;background:linear-gradient(to top,var(--render) 70%,rgba(244,241,232,0));
+      padding:18px 22px max(18px,env(safe-area-inset-bottom))}
+.foot .in{max-width:860px;margin:0 auto;display:flex;gap:12px;align-items:center}
+.btn{border:0;border-radius:14px;padding:18px 30px;font-size:20px;font-weight:600;cursor:pointer;
+     display:inline-flex;align-items:center;gap:10px;justify-content:center}
+.btn.go{background:var(--basalt);color:#F4F1E8;flex:1;min-height:66px}
+.btn.go[disabled]{background:#B9B6AA;cursor:default}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--basalt);min-height:66px}
+.btn.ghost[hidden]{display:none}
+.dots{display:flex;gap:7px;justify-content:center;margin:0 0 12px}
+.dots i{width:9px;height:9px;border-radius:50%;background:#D6CFBC}
+.dots i.on{background:var(--timber);width:26px;border-radius:5px}
+.dots i.done{background:var(--green)}
+
+.hero{display:grid;place-items:center;text-align:center;padding:36px 10px 18px}
+.hero .mark{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;margin-bottom:18px;
+            background:var(--line-2);color:var(--basalt)}
+.hero .mark.ok{background:#E3EBDC;color:var(--green)}
+.hero h1{font-size:32px}
+.hero .lead{max-width:560px}
+.steps{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0 4px}
+.steps span{display:flex;align-items:center}
+.steps span+span::before{content:"";width:34px;height:2px;background:var(--line);margin:0 8px}
+.steps span.ok+span::before,.steps span.on::before{background:var(--green)}
+.steps b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:14px;
+         background:var(--line-2);color:var(--basalt);font-family:'Inter',sans-serif}
+.steps .on{border-color:var(--timber);color:var(--ink)} .steps .on b{background:var(--timber);color:#fff}
+.steps .ok b{background:var(--green);color:#fff}
+
+
+.sheet{position:fixed;inset:0;background:rgba(30,32,28,.55);display:grid;place-items:center;padding:20px;z-index:20}
+.sheet[hidden]{display:none}
+.sheet .box{background:var(--card);border-radius:18px;padding:24px;width:min(420px,100%);max-height:92vh;overflow:auto;font-family:'Inter',sans-serif;direction:ltr;text-align:left}
+.sheet h2{margin:0 0 4px;font-size:20px}
+.sheet p{margin:0 0 14px;color:var(--soft);font-size:14.5px;line-height:1.5}
+.sheet .readout{min-height:70px;font-size:38px;letter-spacing:12px;margin-bottom:12px}
+.sheet .msg{min-height:20px;color:var(--alarm);font-size:14px;margin:8px 0 0}
+.sheet .row{display:flex;gap:10px;margin-top:12px}
+.sheet .row .btn{flex:1;padding:14px;font-size:17px;min-height:0}
+
+.langs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:640px){.langs{grid-template-columns:repeat(2,1fr)}}
+.langs button{border:2px solid var(--line);background:#fff;border-radius:12px;padding:14px;font-size:19px;cursor:pointer}
+.langs [data-l="bn"]{font-family:'Noto Sans Bengali',sans-serif}
+.langs [data-l="hi"]{font-family:'Noto Sans Devanagari',sans-serif}
+.langs [data-l="ur"]{font-family:'Noto Nastaliq Urdu',serif}
+.langs [data-l="ar"]{font-family:'IBM Plex Sans Arabic',sans-serif}
+.langs button[aria-checked="true"]{border-color:var(--green);background:var(--sel)}
+
+.likert{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:24px;direction:ltr}
+body.rtl .likert{direction:rtl}
+.lk{min-height:84px;border:2px solid var(--line);border-radius:14px;background:#fff;cursor:pointer;display:grid;place-items:center}
+.lk b{font-size:32px;font-family:'Inter',sans-serif;color:var(--basalt)}
+body.rtl .lk b,body.lang-bn .lk b{font-family:inherit}
+.lk[aria-checked="true"]{border-color:var(--green);background:var(--sel)}
+.lkEnds{display:flex;justify-content:space-between;gap:12px;margin-top:8px;color:var(--soft);font-size:16px}
+.err{margin-top:16px;padding:12px 14px;border-radius:12px;background:#FBEDE5;color:var(--alarm);font-size:16px}
+.err[hidden]{display:none}
+.spin{width:44px;height:44px;border:4px solid var(--line);border-top-color:var(--timber);border-radius:50%;
+      animation:r 0.9s linear infinite;margin:60px auto}
+@keyframes r{to{transform:rotate(360deg)}}
+
+@media (max-width:640px){
+  main{padding:18px 14px}
+  .card{padding:22px 18px}
+  h1{font-size:24px}
+  .opts.three{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .opt{font-size:18px;min-height:68px}
+  .padWrap{grid-template-columns:1fr}
+  .brand .en{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand"><span class="ar">أدويتي</span><span class="en">Adwiyati</span></div>
+    <span class="sp"></span>
+    <span class="part" id="partTag"></span>
+    <button class="langBtn" id="langBtn" type="button" hidden>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+      <span id="langName"></span>
+    </button>
+  </header>
+  <div class="bar"><i id="barFill"></i></div>
+  <main id="main"><div class="spin" aria-label="Loading"></div></main>
+  <footer class="foot" id="foot" hidden>
+    <div class="in">
+      <button class="btn ghost" id="backBtn" type="button"></button>
+      <button class="btn go" id="nextBtn" type="button"></button>
+    </div>
+  </footer>
+</div>
+
+<div class="sheet" id="langSheet" hidden role="dialog" aria-modal="true">
+  <div class="box" style="direction:ltr;width:min(620px,100%)">
+    <div class="langs" id="langList"></div>
+    <div class="row"><button class="btn ghost" id="langClose" type="button">OK</button></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const SB_URL  = 'https://eupjgrhairixgmjwftnq.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1cGpncmhhaXJpeGdtandmdG5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2Mjk1ODcsImV4cCI6MjEwMjIwNTU4N30.cv1nciUDlVFbuOTRecwHkgIodHgP5iZE8UnsPEW5ROI';
+const VERSION = 'ph6.62';
+
+/* --------------------------------------------------------------------------
+   WORDING. Drafts in every language except English and Arabic: each goes
+   through certified forward and back translation and a native-speaker
+   review before the first participant (protocol §12.3). The questions do
+   not reuse the label's own phrases where a neutral wording exists, so the
+   questionnaire does not quietly favour either label.
+   -------------------------------------------------------------------------- */
+const LANGS = {
+  ar:{name:'العربية', dir:'rtl', locale:'ar'},
+  en:{name:'English', dir:'ltr', locale:'en'},
+  ur:{name:'اردو', dir:'rtl', locale:'ur'},
+  id:{name:'Bahasa Indonesia', dir:'ltr', locale:'id'}, ms:{"name":"Bahasa Melayu","dir":"ltr","locale":"ms"},
+  bn:{name:'বাংলা', dir:'ltr', locale:'bn'}, hi:{"name":"हिन्दी","dir":"ltr","locale":"hi"}, tl:{"name":"Filipino","dir":"ltr","locale":"fil"},
+  es:{name:'Español', dir:'ltr', locale:'es'},
+  fr:{name:'Français', dir:'ltr', locale:'fr'},
+  tr:{name:'Türkçe', dir:'ltr', locale:'tr'},
+  de:{name:'Deutsch', dir:'ltr', locale:'de'},
+  ja:{name:'日本語', dir:'ltr', locale:'ja'},
+  ru:{name:'Русский', dir:'ltr', locale:'ru'},
+  zh:{name:'中文', dir:'ltr', locale:'zh'}
+};
+const T = {
+en:{units_tablet1:'tablet', units_capsule1:'capsule', times_unit1:'time a day', days_unit1:'day', part:'Part {p} of 3', title1:'Questions about your medicine', body1:'Look at the label on your medicine box and answer 4 short questions. We are testing the label, not you.',
+ title2:'Now the new label', body2:'Look at the new label in your language and answer the same 4 questions again.',
+ body2r:'Look at the label on your medicine box again and answer the same 4 questions.',
+ start:'Start', next:'Next', back:'Back', send:'Send answers', listen:'Listen', stop:'Stop', med:'Medicine',
+ q_dose_tablet:'How many tablets do you take each time?', q_dose_capsule:'How many capsules do you take each time?',
+ other_num:'Another number', dk:"I don't know", q_freq:'How many times a day do you take it?',
+ q_food:'Do you take it with food or on an empty stomach?', food_with:'With food', food_empty:'On an empty stomach (before food)', food_any:'It does not matter',
+ q_days:'For how many days do you take it?', days_unit:'days', ongoing:'I keep taking it — no end date', times_unit:'times a day', units_tablet:'tablets', units_capsule:'capsules',
+ type_num:'Type the number', hb_title:'Thank you', hb_body:'Please give the device back to the pharmacist.',
+ p3_title:'Last questions — about you', p3_body:'These help us understand who the labels work for. You can skip any of them.', skip:'Skip',
+ easier:'Which label was easier to understand?', first:'The first label', newl:'The new label', same:'Both the same',
+ read_ar:'Can you read Arabic?', read_en:'Can you read English?', yes:'Yes', little:'A little', no:'No',
+ page:'Would you use a page on your phone that explains your medicine?', maybe:'Maybe',
+ age:'Your age', sex:'You are', man:'A man', woman:'A woman', edu:'Your schooling', none:'No schooling', primary:'Primary school', secondary:'Middle or high school', uni:'University',
+ done_title:'All done — thank you!', done_body:'Please give the device back to the pharmacist.',
+ expired:'This questionnaire has expired. Please ask the pharmacist.', invalid:'This questionnaire link is not valid.',
+ err:'Could not send. Check the connection and try again.', retry:'Try again', q:'Question {i} of {n}'},
+ar:{units_tablet1:'حبة', units_capsule1:'كبسولة', times_unit1:'مرة في اليوم', days_unit1:'يوم', part:'الجزء {p} من ٣', title1:'أسئلة عن دوائك', body1:'انظر إلى الملصق الذي على علبة دوائك وأجب عن ٤ أسئلة قصيرة. نحن نختبر الملصق، لا نختبرك.',
+ title2:'الآن الملصق الجديد', body2:'انظر إلى الملصق الجديد بلغتك وأجب عن الأسئلة الأربعة نفسها مرة أخرى.',
+ body2r:'انظر مرة أخرى إلى الملصق الذي على علبة دوائك وأجب عن الأسئلة الأربعة نفسها.',
+ start:'ابدأ', next:'التالي', back:'رجوع', send:'أرسل الإجابات', listen:'استمع', stop:'إيقاف', med:'الدواء',
+ q_dose_tablet:'كم حبة تأخذ في كل مرة؟', q_dose_capsule:'كم كبسولة تأخذ في كل مرة؟',
+ other_num:'رقم آخر', dk:'لا أعرف', q_freq:'كم مرة في اليوم تأخذه؟',
+ q_food:'هل تأخذه مع الأكل أم على معدة فارغة؟', food_with:'مع الأكل', food_empty:'على معدة فارغة (قبل الأكل)', food_any:'لا يهم',
+ q_days:'كم يومًا تستمر في أخذه؟', days_unit:'أيام', ongoing:'أستمر عليه دائمًا، بدون نهاية', times_unit:'مرات في اليوم', units_tablet:'حبات', units_capsule:'كبسولات',
+ type_num:'اكتب الرقم', hb_title:'شكرًا لك', hb_body:'من فضلك أعد الجهاز إلى الصيدلي.',
+ p3_title:'أسئلة أخيرة عنك', p3_body:'تساعدنا هذه الأسئلة على معرفة لمن يفيد الملصق. يمكنك تخطي أي سؤال.', skip:'تخطَّ',
+ easier:'أي ملصق كان أسهل في الفهم؟', first:'الملصق الأول', newl:'الملصق الجديد', same:'نفس الشيء',
+ read_ar:'هل تستطيع قراءة العربية؟', read_en:'هل تستطيع قراءة الإنجليزية؟', yes:'نعم', little:'قليلًا', no:'لا',
+ page:'هل ستستخدم صفحة على جوالك تشرح دواءك؟', maybe:'ربما',
+ age:'عمرك', sex:'أنت', man:'رجل', woman:'امرأة', edu:'تعليمك', none:'لم أدرس', primary:'ابتدائي', secondary:'متوسط أو ثانوي', uni:'جامعي',
+ done_title:'انتهينا — شكرًا لك!', done_body:'من فضلك أعد الجهاز إلى الصيدلي.',
+ expired:'انتهت صلاحية هذا الاستبيان. من فضلك اسأل الصيدلي.', invalid:'رابط هذا الاستبيان غير صالح.',
+ err:'لم يتم الإرسال. تأكد من الاتصال وحاول مرة أخرى.', retry:'حاول مرة أخرى', q:'سؤال {i} من {n}'},
+ur:{units_tablet1:'گولی', units_capsule1:'کیپسول', part:'حصہ {p} از 3', title1:'آپ کی دوا کے بارے میں سوالات', body1:'اپنی دوا کے ڈبے پر لگے لیبل کو دیکھیں اور 4 مختصر سوالوں کے جواب دیں۔ ہم لیبل کو جانچ رہے ہیں، آپ کو نہیں۔',
+ title2:'اب نیا لیبل', body2:'اپنی زبان والا نیا لیبل دیکھیں اور انہی 4 سوالوں کے جواب دوبارہ دیں۔',
+ body2r:'اپنی دوا کے ڈبے پر لگا لیبل دوبارہ دیکھیں اور انہی 4 سوالوں کے جواب دیں۔',
+ start:'شروع کریں', next:'آگے', back:'پیچھے', send:'جوابات بھیجیں', listen:'سنیں', stop:'روکیں', med:'دوا',
+ q_dose_tablet:'آپ ہر بار کتنی گولیاں لیتے ہیں؟', q_dose_capsule:'آپ ہر بار کتنے کیپسول لیتے ہیں؟',
+ other_num:'کوئی اور تعداد', dk:'مجھے نہیں معلوم', q_freq:'آپ اسے دن میں کتنی بار لیتے ہیں؟',
+ q_food:'آپ اسے کھانے کے ساتھ لیتے ہیں یا خالی پیٹ؟', food_with:'کھانے کے ساتھ', food_empty:'خالی پیٹ (کھانے سے پہلے)', food_any:'کوئی فرق نہیں پڑتا',
+ q_days:'آپ اسے کتنے دن لیں گے؟', days_unit:'دن', ongoing:'ہمیشہ لیتا رہوں گا، کوئی آخری دن نہیں', times_unit:'بار روزانہ', units_tablet:'گولیاں', units_capsule:'کیپسول',
+ type_num:'تعداد لکھیں', hb_title:'شکریہ', hb_body:'براہ کرم آلہ فارماسسٹ کو واپس دے دیں۔',
+ p3_title:'آخری سوالات، آپ کے بارے میں', p3_body:'ان سے ہمیں پتا چلتا ہے کہ لیبل کس کے لیے مفید ہے۔ آپ کوئی بھی سوال چھوڑ سکتے ہیں۔', skip:'چھوڑیں',
+ easier:'کون سا لیبل سمجھنا زیادہ آسان تھا؟', first:'پہلا لیبل', newl:'نیا لیبل', same:'دونوں ایک جیسے',
+ read_ar:'کیا آپ عربی پڑھ سکتے ہیں؟', read_en:'کیا آپ انگریزی پڑھ سکتے ہیں؟', yes:'ہاں', little:'تھوڑی سی', no:'نہیں',
+ page:'کیا آپ اپنے فون پر ایسا صفحہ استعمال کریں گے جو آپ کی دوا سمجھائے؟', maybe:'شاید',
+ age:'آپ کی عمر', sex:'آپ', man:'مرد', woman:'عورت', edu:'آپ کی تعلیم', none:'کوئی تعلیم نہیں', primary:'پرائمری', secondary:'مڈل یا میٹرک', uni:'یونیورسٹی',
+ done_title:'مکمل ہو گیا، شکریہ!', done_body:'براہ کرم آلہ فارماسسٹ کو واپس دے دیں۔',
+ expired:'اس سوالنامے کا وقت ختم ہو گیا ہے۔ براہ کرم فارماسسٹ سے پوچھیں۔', invalid:'اس سوالنامے کا لنک درست نہیں ہے۔',
+ err:'جوابات نہیں بھیجے جا سکے۔ کنکشن چیک کریں اور دوبارہ کوشش کریں۔', retry:'دوبارہ کوشش کریں', q:'سوال {i} از {n}'},
+bn:{part:'অংশ {p} / ৩', title1:'আপনার ওষুধ সম্পর্কে প্রশ্ন', body1:'আপনার ওষুধের বাক্সের লেবেলটি দেখুন এবং ৪টি ছোট প্রশ্নের উত্তর দিন। আমরা লেবেলটি পরীক্ষা করছি, আপনাকে নয়।',
+ title2:'এবার নতুন লেবেল', body2:'আপনার ভাষার নতুন লেবেলটি দেখুন এবং একই ৪টি প্রশ্নের উত্তর আবার দিন।',
+ body2r:'আপনার ওষুধের বাক্সের লেবেলটি আবার দেখুন এবং একই ৪টি প্রশ্নের উত্তর দিন।',
+ start:'শুরু করুন', next:'পরবর্তী', back:'পিছনে', send:'উত্তর পাঠান', listen:'শুনুন', stop:'থামুন', med:'ওষুধ',
+ q_dose_tablet:'আপনি প্রতিবার কয়টি ট্যাবলেট খান?', q_dose_capsule:'আপনি প্রতিবার কয়টি ক্যাপসুল খান?',
+ other_num:'অন্য সংখ্যা', dk:'আমি জানি না', q_freq:'আপনি দিনে কতবার এটি খান?',
+ q_food:'আপনি এটি খাবারের সাথে খান, নাকি খালি পেটে?', food_with:'খাবারের সাথে', food_empty:'খালি পেটে (খাবারের আগে)', food_any:'কোনো পার্থক্য নেই',
+ q_days:'আপনি কত দিন এটি খাবেন?', days_unit:'দিন', ongoing:'সবসময় খেতে থাকব, কোনো শেষ দিন নেই', times_unit:'বার দিনে', units_tablet:'ট্যাবলেট', units_capsule:'ক্যাপসুল',
+ type_num:'সংখ্যাটি লিখুন', hb_title:'ধন্যবাদ', hb_body:'অনুগ্রহ করে যন্ত্রটি ফার্মাসিস্টকে ফেরত দিন।',
+ p3_title:'শেষ কয়েকটি প্রশ্ন, আপনার সম্পর্কে', p3_body:'এগুলো আমাদের বুঝতে সাহায্য করে লেবেলটি কাদের কাজে আসে। যেকোনো প্রশ্ন বাদ দিতে পারেন।', skip:'বাদ দিন',
+ easier:'কোন লেবেলটি বোঝা সহজ ছিল?', first:'প্রথম লেবেল', newl:'নতুন লেবেল', same:'দুটোই একই রকম',
+ read_ar:'আপনি কি আরবি পড়তে পারেন?', read_en:'আপনি কি ইংরেজি পড়তে পারেন?', yes:'হ্যাঁ', little:'একটু', no:'না',
+ page:'আপনার ওষুধ বুঝিয়ে দেয় এমন একটি পাতা কি আপনি ফোনে ব্যবহার করবেন?', maybe:'হয়তো',
+ age:'আপনার বয়স', sex:'আপনি', man:'পুরুষ', woman:'নারী', edu:'আপনার পড়াশোনা', none:'পড়াশোনা করিনি', primary:'প্রাথমিক', secondary:'মাধ্যমিক', uni:'বিশ্ববিদ্যালয়',
+ done_title:'শেষ হয়েছে, ধন্যবাদ!', done_body:'অনুগ্রহ করে যন্ত্রটি ফার্মাসিস্টকে ফেরত দিন।',
+ expired:'এই প্রশ্নাবলীর সময় শেষ হয়ে গেছে। অনুগ্রহ করে ফার্মাসিস্টকে জিজ্ঞাসা করুন।', invalid:'এই প্রশ্নাবলীর লিংকটি সঠিক নয়।',
+ err:'পাঠানো যায়নি। সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।', retry:'আবার চেষ্টা করুন', q:'প্রশ্ন {i} / {n}'}, hi:{"units_tablet1":"गोली","units_capsule1":"कैप्सूल","times_unit1":"बार रोज़ाना","days_unit1":"दिन","part":"भाग {p} / 3","title1":"आपकी दवा के बारे में सवाल","body1":"अपनी दवा के डिब्बे पर लगा लेबल देखें और 4 छोटे सवालों के जवाब दें। हम लेबल को जाँच रहे हैं, आपको नहीं।","title2":"अब नया लेबल","body2":"अपनी भाषा वाला नया लेबल देखें और वही 4 सवालों के जवाब फिर से दें।","body2r":"अपनी दवा के डिब्बे पर लगा लेबल फिर से देखें और वही 4 सवालों के जवाब दें।","start":"शुरू करें","next":"आगे","back":"पीछे","send":"जवाब भेजें","listen":"सुनें","stop":"रोकें","med":"दवा","q_dose_tablet":"आप हर बार कितनी गोलियाँ लेते हैं?","q_dose_capsule":"आप हर बार कितने कैप्सूल लेते हैं?","other_num":"कोई दूसरी संख्या","dk":"मुझे नहीं पता","q_freq":"आप इसे दिन में कितनी बार लेते हैं?","q_food":"आप इसे खाने के साथ लेते हैं या ख़ाली पेट?","food_with":"खाने के साथ","food_empty":"ख़ाली पेट (खाने से पहले)","food_any":"कोई फ़र्क़ नहीं पड़ता","q_days":"आप इसे कितने दिन तक लेते हैं?","days_unit":"दिन","ongoing":"हमेशा लेते रहना है — कोई आख़िरी दिन नहीं","times_unit":"बार रोज़ाना","units_tablet":"गोलियाँ","units_capsule":"कैप्सूल","type_num":"संख्या लिखें","hb_title":"धन्यवाद","hb_body":"कृपया यह डिवाइस फार्मासिस्ट को वापस दे दें।","p3_title":"आख़िरी सवाल — आपके बारे में","p3_body":"इनसे हमें समझने में मदद मिलती है कि लेबल किन लोगों के काम आते हैं। आप इनमें से कोई भी सवाल छोड़ सकते हैं।","skip":"छोड़ें","easier":"कौन सा लेबल समझने में आसान था?","first":"पहला लेबल","newl":"नया लेबल","same":"दोनों एक जैसे","read_ar":"क्या आप अरबी पढ़ सकते हैं?","read_en":"क्या आप अंग्रेज़ी पढ़ सकते हैं?","yes":"हाँ","little":"थोड़ा","no":"नहीं","page":"क्या आप अपने फ़ोन पर ऐसा पेज इस्तेमाल करेंगे जो आपकी दवा समझाए?","maybe":"शायद","age":"आपकी उम्र","sex":"आप हैं","man":"पुरुष","woman":"महिला","edu":"आपकी पढ़ाई","none":"कोई पढ़ाई नहीं","primary":"प्राइमरी स्कूल","secondary":"मिडिल या हाई स्कूल","uni":"यूनिवर्सिटी","done_title":"सब हो गया — धन्यवाद!","done_body":"कृपया यह डिवाइस फार्मासिस्ट को वापस दे दें।","expired":"इस प्रश्नावली का समय ख़त्म हो गया है। कृपया फार्मासिस्ट से पूछें।","invalid":"प्रश्नावली का यह लिंक मान्य नहीं है।","err":"भेजा नहीं जा सका। कनेक्शन जाँचें और दोबारा कोशिश करें।","retry":"दोबारा कोशिश करें","q":"सवाल {i} / {n}"}, tl:{"units_tablet1":"tableta","units_capsule1":"kapsula","times_unit1":"beses sa isang araw","days_unit1":"araw","part":"Bahagi {p} ng 3","title1":"Mga tanong tungkol sa iyong gamot","body1":"Tingnan ang label sa kahon ng iyong gamot at sagutin ang 4 na maikling tanong. Ang label ang sinusuri namin, hindi ikaw.","title2":"Ngayon ang bagong label","body2":"Tingnan ang bagong label sa iyong wika at sagutin ulit ang parehong 4 na tanong.","body2r":"Tingnan ulit ang label sa kahon ng iyong gamot at sagutin ang parehong 4 na tanong.","start":"Simulan","next":"Susunod","back":"Bumalik","send":"Ipadala ang mga sagot","listen":"Makinig","stop":"Ihinto","med":"Gamot","q_dose_tablet":"Ilang tableta ang iniinom mo bawat inom?","q_dose_capsule":"Ilang kapsula ang iniinom mo bawat inom?","other_num":"Ibang numero","dk":"Hindi ko alam","q_freq":"Ilang beses sa isang araw mo ito iniinom?","q_food":"Iniinom mo ba ito kasabay ng pagkain o nang walang laman ang sikmura?","food_with":"Kasabay ng pagkain","food_empty":"Walang laman ang sikmura (bago kumain)","food_any":"Hindi mahalaga","q_days":"Ilang araw mo ito iinumin?","days_unit":"araw","ongoing":"Patuloy ko itong iinumin — walang katapusang petsa","times_unit":"beses sa isang araw","units_tablet":"tableta","units_capsule":"kapsula","type_num":"I-type ang numero","hb_title":"Salamat","hb_body":"Pakibalik ang device sa parmasyutiko.","p3_title":"Huling mga tanong — tungkol sa iyo","p3_body":"Tinutulungan kami ng mga ito na maunawaan kung para kanino gumagana ang mga label. Maaari mong laktawan ang alinman.","skip":"Laktawan","easier":"Aling label ang mas madaling maunawaan?","first":"Ang unang label","newl":"Ang bagong label","same":"Pareho lang","read_ar":"Nakakabasa ka ba ng Arabic?","read_en":"Nakakabasa ka ba ng English?","yes":"Oo","little":"Kaunti","no":"Hindi","page":"Gagamit ka ba ng pahina sa iyong telepono na nagpapaliwanag ng iyong gamot?","maybe":"Siguro","age":"Ang iyong edad","sex":"Ikaw ay","man":"Lalaki","woman":"Babae","edu":"Ang iyong pag-aaral","none":"Hindi nag-aral","primary":"Elementarya","secondary":"High school","uni":"Kolehiyo","done_title":"Tapos na — salamat!","done_body":"Pakibalik ang device sa parmasyutiko.","expired":"Nag-expire na ang questionnaire na ito. Magtanong sa parmasyutiko.","invalid":"Hindi wasto ang link ng questionnaire na ito.","err":"Hindi naipadala. Tingnan ang koneksiyon at subukan ulit.","retry":"Subukan ulit","q":"Tanong {i} ng {n}"},
+id:{part:'Bagian {p} dari 3', title1:'Pertanyaan tentang obat Anda', body1:'Lihat label pada kotak obat Anda dan jawab 4 pertanyaan singkat. Yang kami uji adalah labelnya, bukan Anda.',
+ title2:'Sekarang label yang baru', body2:'Lihat label baru dalam bahasa Anda dan jawab lagi 4 pertanyaan yang sama.',
+ body2r:'Lihat lagi label pada kotak obat Anda dan jawab 4 pertanyaan yang sama.',
+ start:'Mulai', next:'Lanjut', back:'Kembali', send:'Kirim jawaban', listen:'Dengarkan', stop:'Berhenti', med:'Obat',
+ q_dose_tablet:'Berapa tablet yang Anda minum setiap kali?', q_dose_capsule:'Berapa kapsul yang Anda minum setiap kali?',
+ other_num:'Jumlah lain', dk:'Saya tidak tahu', q_freq:'Berapa kali sehari Anda meminumnya?',
+ q_food:'Apakah Anda meminumnya bersama makanan atau saat perut kosong?', food_with:'Bersama makanan', food_empty:'Saat perut kosong (sebelum makan)', food_any:'Tidak masalah',
+ q_days:'Berapa hari Anda meminumnya?', days_unit:'hari', ongoing:'Terus diminum, tanpa hari terakhir', times_unit:'kali sehari', units_tablet:'tablet', units_capsule:'kapsul',
+ type_num:'Ketik angkanya', hb_title:'Terima kasih', hb_body:'Silakan kembalikan perangkat ini kepada apoteker.',
+ p3_title:'Pertanyaan terakhir tentang Anda', p3_body:'Ini membantu kami memahami label ini bermanfaat bagi siapa. Anda boleh melewati pertanyaan mana pun.', skip:'Lewati',
+ easier:'Label mana yang lebih mudah dipahami?', first:'Label pertama', newl:'Label baru', same:'Sama saja',
+ read_ar:'Apakah Anda bisa membaca bahasa Arab?', read_en:'Apakah Anda bisa membaca bahasa Inggris?', yes:'Ya', little:'Sedikit', no:'Tidak',
+ page:'Apakah Anda akan memakai halaman di ponsel yang menjelaskan obat Anda?', maybe:'Mungkin',
+ age:'Usia Anda', sex:'Anda', man:'Laki-laki', woman:'Perempuan', edu:'Pendidikan Anda', none:'Tidak sekolah', primary:'SD', secondary:'SMP atau SMA', uni:'Perguruan tinggi',
+ done_title:'Selesai, terima kasih!', done_body:'Silakan kembalikan perangkat ini kepada apoteker.',
+ expired:'Kuesioner ini sudah kedaluwarsa. Silakan tanya apoteker.', invalid:'Tautan kuesioner ini tidak berlaku.',
+ err:'Gagal mengirim. Periksa koneksi dan coba lagi.', retry:'Coba lagi', q:'Pertanyaan {i} dari {n}'}, ms:{"units_tablet1":"tablet","units_capsule1":"kapsul","times_unit1":"kali sehari","days_unit1":"hari","part":"Bahagian {p} daripada 3","title1":"Soalan tentang ubat anda","body1":"Lihat label pada kotak ubat anda dan jawab 4 soalan pendek. Kami menguji label, bukan anda.","title2":"Sekarang label baharu","body2":"Lihat label baharu dalam bahasa anda dan jawab 4 soalan yang sama sekali lagi.","body2r":"Lihat sekali lagi label pada kotak ubat anda dan jawab 4 soalan yang sama.","start":"Mula","next":"Seterusnya","back":"Kembali","send":"Hantar jawapan","listen":"Dengar","stop":"Berhenti","med":"Ubat","q_dose_tablet":"Berapa biji tablet yang anda ambil setiap kali?","q_dose_capsule":"Berapa biji kapsul yang anda ambil setiap kali?","other_num":"Nombor lain","dk":"Saya tidak tahu","q_freq":"Berapa kali sehari anda mengambilnya?","q_food":"Adakah anda mengambilnya bersama makanan atau semasa perut kosong?","food_with":"Bersama makanan","food_empty":"Semasa perut kosong (sebelum makan)","food_any":"Tidak kira","q_days":"Berapa hari anda mengambilnya?","days_unit":"hari","ongoing":"Saya terus mengambilnya — tiada tarikh tamat","times_unit":"kali sehari","units_tablet":"tablet","units_capsule":"kapsul","type_num":"Taip nombornya","hb_title":"Terima kasih","hb_body":"Sila pulangkan peranti ini kepada ahli farmasi.","p3_title":"Soalan terakhir — tentang anda","p3_body":"Soalan ini membantu kami memahami untuk siapa label ini berkesan. Anda boleh melangkau mana-mana soalan.","skip":"Langkau","easier":"Label manakah yang lebih mudah difahami?","first":"Label pertama","newl":"Label baharu","same":"Kedua-duanya sama","read_ar":"Bolehkah anda membaca bahasa Arab?","read_en":"Bolehkah anda membaca bahasa Inggeris?","yes":"Ya","little":"Sedikit","no":"Tidak","page":"Adakah anda akan menggunakan halaman di telefon anda yang menerangkan ubat anda?","maybe":"Mungkin","age":"Umur anda","sex":"Jantina anda","man":"Lelaki","woman":"Perempuan","edu":"Tahap pendidikan anda","none":"Tidak bersekolah","primary":"Sekolah rendah","secondary":"Sekolah menengah","uni":"Universiti","done_title":"Selesai — terima kasih!","done_body":"Sila pulangkan peranti ini kepada ahli farmasi.","expired":"Soal selidik ini telah tamat tempoh. Sila tanya ahli farmasi.","invalid":"Pautan soal selidik ini tidak sah.","err":"Tidak dapat dihantar. Semak sambungan dan cuba lagi.","retry":"Cuba lagi","q":"Soalan {i} daripada {n}"},
+es:{units_tablet1:'tableta', units_capsule1:'cápsula', times_unit1:'vez al día', days_unit1:'día', part:'Parte {p} de 3', title1:'Preguntas sobre su medicamento', body1:'Mire la etiqueta de la caja de su medicamento y responda 4 preguntas cortas. Estamos evaluando la etiqueta, no a usted.',
+ title2:'Ahora, la etiqueta nueva', body2:'Mire la etiqueta nueva en su idioma y responda otra vez las mismas 4 preguntas.',
+ body2r:'Mire otra vez la etiqueta de la caja de su medicamento y responda las mismas 4 preguntas.',
+ start:'Empezar', next:'Siguiente', back:'Atrás', send:'Enviar respuestas', listen:'Escuchar', stop:'Detener', med:'Medicamento',
+ q_dose_tablet:'¿Cuántas tabletas toma cada vez?', q_dose_capsule:'¿Cuántas cápsulas toma cada vez?',
+ other_num:'Otro número', dk:'No lo sé', q_freq:'¿Cuántas veces al día lo toma?',
+ q_food:'¿Lo toma con comida o con el estómago vacío?', food_with:'Con comida', food_empty:'Con el estómago vacío (antes de comer)', food_any:'Da igual',
+ q_days:'¿Durante cuántos días lo toma?', days_unit:'días', ongoing:'Lo sigo tomando siempre, sin fecha de fin', times_unit:'veces al día', units_tablet:'tabletas', units_capsule:'cápsulas',
+ type_num:'Escriba el número', hb_title:'Gracias', hb_body:'Por favor, devuelva el dispositivo al farmacéutico.',
+ p3_title:'Últimas preguntas, sobre usted', p3_body:'Nos ayudan a saber para quién funcionan las etiquetas. Puede saltar cualquier pregunta.', skip:'Saltar',
+ easier:'¿Qué etiqueta fue más fácil de entender?', first:'La primera etiqueta', newl:'La etiqueta nueva', same:'Las dos igual',
+ read_ar:'¿Puede leer árabe?', read_en:'¿Puede leer inglés?', yes:'Sí', little:'Un poco', no:'No',
+ page:'¿Usaría en su teléfono una página que explique su medicamento?', maybe:'Quizás',
+ age:'Su edad', sex:'Usted es', man:'Hombre', woman:'Mujer', edu:'Sus estudios', none:'Sin estudios', primary:'Primaria', secondary:'Secundaria', uni:'Universidad',
+ done_title:'¡Terminado, gracias!', done_body:'Por favor, devuelva el dispositivo al farmacéutico.',
+ expired:'Este cuestionario ha caducado. Por favor, pregunte al farmacéutico.', invalid:'El enlace de este cuestionario no es válido.',
+ err:'No se pudo enviar. Revise la conexión e inténtelo de nuevo.', retry:'Intentar de nuevo', q:'Pregunta {i} de {n}'},
+fr:{part:'Partie {p} sur 3', title1:'Questions sur votre médicament', body1:"Regardez l'étiquette sur la boîte de votre médicament et répondez à 4 courtes questions. Nous évaluons l'étiquette, pas vous.",
+ title2:'Maintenant, la nouvelle étiquette', body2:'Regardez la nouvelle étiquette dans votre langue et répondez de nouveau aux 4 mêmes questions.',
+ body2r:"Regardez de nouveau l'étiquette sur la boîte de votre médicament et répondez aux 4 mêmes questions.",
+ start:'Commencer', next:'Suivant', back:'Retour', send:'Envoyer les réponses', listen:'Écouter', stop:'Arrêter', med:'Médicament',
+ q_dose_tablet:'Combien de comprimés prenez-vous à chaque prise ?', q_dose_capsule:'Combien de gélules prenez-vous à chaque prise ?',
+ other_num:'Un autre nombre', dk:'Je ne sais pas', q_freq:'Combien de fois par jour le prenez-vous ?',
+ q_food:'Le prenez-vous pendant le repas ou à jeun ?', food_with:'Pendant le repas', food_empty:'À jeun (avant de manger)', food_any:'Peu importe',
+ q_days:'Pendant combien de jours le prenez-vous ?', days_unit:'jours', days_unit1:'jour', ongoing:'Je continue à le prendre, sans date de fin',
+ times_unit:'fois par jour', units_tablet:'comprimés', units_tablet1:'comprimé', units_capsule:'gélules', units_capsule1:'gélule',
+ type_num:'Tapez le nombre', hb_title:'Merci', hb_body:"Veuillez rendre l'appareil au pharmacien.",
+ p3_title:'Dernières questions, sur vous', p3_body:"Elles nous aident à savoir à qui l'étiquette est utile. Vous pouvez passer n'importe quelle question.", skip:'Passer',
+ easier:'Quelle étiquette était la plus facile à comprendre ?', first:'La première étiquette', newl:'La nouvelle étiquette', same:'Les deux pareil',
+ read_ar:"Savez-vous lire l'arabe ?", read_en:"Savez-vous lire l'anglais ?", yes:'Oui', little:'Un peu', no:'Non',
+ page:'Utiliseriez-vous sur votre téléphone une page qui explique votre médicament ?', maybe:'Peut-être',
+ age:'Votre âge', sex:'Vous êtes', man:'Un homme', woman:'Une femme', edu:'Votre scolarité', none:'Pas de scolarité', primary:'École primaire', secondary:'Collège ou lycée', uni:'Université',
+ done_title:'Terminé, merci !', done_body:"Veuillez rendre l'appareil au pharmacien.",
+ expired:'Ce questionnaire a expiré. Veuillez demander au pharmacien.', invalid:"Le lien de ce questionnaire n'est pas valide.",
+ err:'Envoi impossible. Vérifiez la connexion et réessayez.', retry:'Réessayer', q:'Question {i} sur {n}'},
+tr:{part:'Bölüm {p} / 3', title1:'İlacınızla ilgili sorular', body1:'İlaç kutunuzdaki etikete bakın ve 4 kısa soruyu yanıtlayın. Sizi değil, etiketi değerlendiriyoruz.',
+ title2:'Şimdi yeni etiket', body2:'Kendi dilinizdeki yeni etikete bakın ve aynı 4 soruyu yeniden yanıtlayın.',
+ body2r:'İlaç kutunuzdaki etikete yeniden bakın ve aynı 4 soruyu yanıtlayın.',
+ start:'Başla', next:'İleri', back:'Geri', send:'Yanıtları gönder', listen:'Dinle', stop:'Durdur', med:'İlaç',
+ q_dose_tablet:'Her seferinde kaç tablet alıyorsunuz?', q_dose_capsule:'Her seferinde kaç kapsül alıyorsunuz?',
+ other_num:'Başka bir sayı', dk:'Bilmiyorum', q_freq:'Günde kaç kez alıyorsunuz?',
+ q_food:'Yemekle mi, yoksa aç karnına mı alıyorsunuz?', food_with:'Yemekle birlikte', food_empty:'Aç karnına (yemekten önce)', food_any:'Fark etmez',
+ q_days:'Kaç gün boyunca alıyorsunuz?', days_unit:'gün', ongoing:'Sürekli alıyorum, bitiş tarihi yok',
+ times_unit:'kez', units_tablet:'tablet', units_capsule:'kapsül',
+ type_num:'Sayıyı yazın', hb_title:'Teşekkürler', hb_body:'Lütfen cihazı eczacıya geri verin.',
+ p3_title:'Son sorular, sizinle ilgili', p3_body:'Bu sorular etiketin kimlere yararlı olduğunu anlamamıza yardımcı olur. İstediğiniz soruyu atlayabilirsiniz.', skip:'Atla',
+ easier:'Hangi etiketi anlamak daha kolaydı?', first:'İlk etiket', newl:'Yeni etiket', same:'İkisi de aynı',
+ read_ar:'Arapça okuyabiliyor musunuz?', read_en:'İngilizce okuyabiliyor musunuz?', yes:'Evet', little:'Biraz', no:'Hayır',
+ page:'İlacınızı açıklayan bir sayfayı telefonunuzda kullanır mıydınız?', maybe:'Belki',
+ age:'Yaşınız', sex:'Cinsiyetiniz', man:'Erkek', woman:'Kadın', edu:'Eğitiminiz', none:'Okula gitmedim', primary:'İlkokul', secondary:'Ortaokul veya lise', uni:'Üniversite',
+ done_title:'Tamamlandı, teşekkürler', done_body:'Lütfen cihazı eczacıya geri verin.',
+ expired:'Bu anketin süresi doldu. Lütfen eczacıya sorun.', invalid:'Bu anket bağlantısı geçerli değil.',
+ err:'Gönderilemedi. Bağlantıyı kontrol edip yeniden deneyin.', retry:'Yeniden dene', q:'Soru {i} / {n}'},
+de:{part:'Teil {p} von 3', title1:'Fragen zu Ihrem Arzneimittel', body1:'Sehen Sie sich das Etikett auf der Packung Ihres Arzneimittels an und beantworten Sie 4 kurze Fragen. Wir prüfen das Etikett, nicht Sie.',
+ title2:'Jetzt das neue Etikett', body2:'Sehen Sie sich das neue Etikett in Ihrer Sprache an und beantworten Sie dieselben 4 Fragen noch einmal.',
+ body2r:'Sehen Sie sich das Etikett auf der Packung noch einmal an und beantworten Sie dieselben 4 Fragen.',
+ start:'Starten', next:'Weiter', back:'Zurück', send:'Antworten senden', listen:'Anhören', stop:'Stopp', med:'Arzneimittel',
+ q_dose_tablet:'Wie viele Tabletten nehmen Sie jedes Mal?', q_dose_capsule:'Wie viele Kapseln nehmen Sie jedes Mal?',
+ other_num:'Andere Zahl', dk:'Weiß ich nicht', q_freq:'Wie oft am Tag nehmen Sie es?',
+ q_food:'Nehmen Sie es zum Essen oder auf nüchternen Magen?', food_with:'Zum Essen', food_empty:'Auf nüchternen Magen (vor dem Essen)', food_any:'Egal',
+ q_days:'Wie viele Tage nehmen Sie es?', days_unit:'Tage', days_unit1:'Tag', ongoing:'Ich nehme es dauerhaft, ohne Enddatum',
+ times_unit:'mal täglich', units_tablet:'Tabletten', units_tablet1:'Tablette', units_capsule:'Kapseln', units_capsule1:'Kapsel',
+ type_num:'Zahl eingeben', hb_title:'Danke', hb_body:'Bitte geben Sie das Gerät dem Apotheker zurück.',
+ p3_title:'Letzte Fragen zu Ihrer Person', p3_body:'Sie helfen uns zu verstehen, wem das Etikett nützt. Sie können jede Frage überspringen.', skip:'Überspringen',
+ easier:'Welches Etikett war leichter zu verstehen?', first:'Das erste Etikett', newl:'Das neue Etikett', same:'Beide gleich',
+ read_ar:'Können Sie Arabisch lesen?', read_en:'Können Sie Englisch lesen?', yes:'Ja', little:'Ein wenig', no:'Nein',
+ page:'Würden Sie auf Ihrem Handy eine Seite nutzen, die Ihr Arzneimittel erklärt?', maybe:'Vielleicht',
+ age:'Ihr Alter', sex:'Sie sind', man:'Ein Mann', woman:'Eine Frau', edu:'Ihre Schulbildung', none:'Keine Schulbildung', primary:'Grundschule', secondary:'Mittel- oder Oberschule', uni:'Universität',
+ done_title:'Fertig – vielen Dank!', done_body:'Bitte geben Sie das Gerät dem Apotheker zurück.',
+ expired:'Dieser Fragebogen ist abgelaufen. Bitte fragen Sie den Apotheker.', invalid:'Der Link zu diesem Fragebogen ist ungültig.',
+ err:'Senden fehlgeschlagen. Prüfen Sie die Verbindung und versuchen Sie es erneut.', retry:'Erneut versuchen', q:'Frage {i} von {n}'},
+ja:{part:'パート {p}/3', title1:'お薬についての質問', body1:'お薬の箱のラベルを見て、4つの短い質問に答えてください。テストしているのはラベルで、あなたではありません。',
+ title2:'次は新しいラベルです', body2:'あなたの言語の新しいラベルを見て、同じ4つの質問にもう一度答えてください。',
+ body2r:'お薬の箱のラベルをもう一度見て、同じ4つの質問に答えてください。',
+ start:'始める', next:'次へ', back:'戻る', send:'回答を送信', listen:'聞く', stop:'停止', med:'お薬',
+ q_dose_tablet:'1回に何錠飲みますか？', q_dose_capsule:'1回に何カプセル飲みますか？',
+ other_num:'ほかの数', dk:'わからない', q_freq:'1日に何回飲みますか？',
+ q_food:'食事と一緒に飲みますか、それとも空腹時に飲みますか？', food_with:'食事と一緒に', food_empty:'空腹時（食事の前）', food_any:'どちらでもよい',
+ q_days:'何日間飲みますか？', days_unit:'日', ongoing:'ずっと飲み続ける（終わりの日はない）',
+ times_unit:'回', units_tablet:'錠', units_capsule:'カプセル',
+ type_num:'数を入力', hb_title:'ありがとうございました', hb_body:'この端末を薬剤師に返してください。',
+ p3_title:'最後に、あなたについての質問', p3_body:'ラベルがどんな人の役に立つかを知るための質問です。どの質問もとばすことができます。', skip:'とばす',
+ easier:'どちらのラベルがわかりやすかったですか？', first:'最初のラベル', newl:'新しいラベル', same:'どちらも同じ',
+ read_ar:'アラビア語を読めますか？', read_en:'英語を読めますか？', yes:'はい', little:'少し', no:'いいえ',
+ page:'お薬を説明するページをスマートフォンで使いますか？', maybe:'たぶん',
+ age:'年齢', sex:'性別', man:'男性', woman:'女性', edu:'最終学歴', none:'学校に行っていない', primary:'小学校', secondary:'中学校・高校', uni:'大学',
+ done_title:'終わりました。ありがとうございました！', done_body:'この端末を薬剤師に返してください。',
+ expired:'このアンケートは期限が切れています。薬剤師にお尋ねください。', invalid:'このアンケートのリンクは無効です。',
+ err:'送信できませんでした。接続を確認して、もう一度お試しください。', retry:'もう一度', q:'質問 {i}/{n}'},
+ru:{part:'Часть {p} из 3', title1:'Вопросы о вашем лекарстве', body1:'Посмотрите на этикетку на упаковке вашего лекарства и ответьте на 4 коротких вопроса. Мы проверяем этикетку, а не вас.',
+ title2:'Теперь новая этикетка', body2:'Посмотрите на новую этикетку на вашем языке и ещё раз ответьте на те же 4 вопроса.',
+ body2r:'Ещё раз посмотрите на этикетку на упаковке лекарства и ответьте на те же 4 вопроса.',
+ start:'Начать', next:'Далее', back:'Назад', send:'Отправить ответы', listen:'Слушать', stop:'Стоп', med:'Лекарство',
+ q_dose_tablet:'Сколько таблеток вы принимаете за один раз?', q_dose_capsule:'Сколько капсул вы принимаете за один раз?',
+ other_num:'Другое число', dk:'Не знаю', q_freq:'Сколько раз в день вы его принимаете?',
+ q_food:'Вы принимаете его во время еды или натощак?', food_with:'Во время еды', food_empty:'Натощак (до еды)', food_any:'Не имеет значения',
+ q_days:'Сколько дней вы его принимаете?', days_unit:'дн.', ongoing:'Принимаю постоянно, без даты окончания',
+ times_unit:'раз(а) в день', units_tablet:'табл.', units_capsule:'капс.',
+ type_num:'Введите число', hb_title:'Спасибо', hb_body:'Пожалуйста, верните устройство фармацевту.',
+ p3_title:'Последние вопросы — о вас', p3_body:'Они помогают понять, кому полезна этикетка. Любой вопрос можно пропустить.', skip:'Пропустить',
+ easier:'Какую этикетку было легче понять?', first:'Первую этикетку', newl:'Новую этикетку', same:'Одинаково',
+ read_ar:'Вы умеете читать по-арабски?', read_en:'Вы умеете читать по-английски?', yes:'Да', little:'Немного', no:'Нет',
+ page:'Стали бы вы пользоваться на телефоне страницей, которая объясняет ваше лекарство?', maybe:'Возможно',
+ age:'Ваш возраст', sex:'Вы', man:'Мужчина', woman:'Женщина', edu:'Ваше образование', none:'Нет образования', primary:'Начальная школа', secondary:'Средняя школа', uni:'Высшее',
+ done_title:'Готово, спасибо!', done_body:'Пожалуйста, верните устройство фармацевту.',
+ expired:'Срок действия анкеты истёк. Пожалуйста, обратитесь к фармацевту.', invalid:'Ссылка на эту анкету недействительна.',
+ err:'Не удалось отправить. Проверьте подключение и попробуйте снова.', retry:'Попробовать снова', q:'Вопрос {i} из {n}'},
+zh:{part:'第 {p} 部分，共 3 部分', title1:'关于您药品的问题', body1:'请看药盒上的标签，回答 4 个简短的问题。我们测试的是标签，不是您。',
+ title2:'现在请看新标签', body2:'请看用您的语言写的新标签，再回答一次同样的 4 个问题。',
+ body2r:'请再看一次药盒上的标签，回答同样的 4 个问题。',
+ start:'开始', next:'下一题', back:'返回', send:'提交答案', listen:'收听', stop:'停止', med:'药品',
+ q_dose_tablet:'您每次吃几片？', q_dose_capsule:'您每次吃几粒胶囊？',
+ other_num:'其他数字', dk:'我不知道', q_freq:'您每天吃几次？',
+ q_food:'您是随餐服用，还是空腹服用？', food_with:'随餐服用', food_empty:'空腹（饭前）', food_any:'都可以',
+ q_days:'您要吃几天？', days_unit:'天', ongoing:'一直吃，没有结束日期',
+ times_unit:'次/天', units_tablet:'片', units_capsule:'粒',
+ type_num:'请输入数字', hb_title:'谢谢', hb_body:'请把设备交还给药剂师。',
+ p3_title:'最后几个关于您的问题', p3_body:'这些问题帮助我们了解标签对哪些人有用。任何问题都可以跳过。', skip:'跳过',
+ easier:'哪个标签更容易理解？', first:'第一个标签', newl:'新标签', same:'一样',
+ read_ar:'您能读阿拉伯文吗？', read_en:'您能读英文吗？', yes:'能', little:'一点点', no:'不能',
+ page:'您会在手机上使用解释您药品的页面吗？', maybe:'也许',
+ age:'您的年龄', sex:'您的性别', man:'男', woman:'女', edu:'您的教育程度', none:'没上过学', primary:'小学', secondary:'初中或高中', uni:'大学',
+ done_title:'完成了，谢谢！', done_body:'请把设备交还给药剂师。',
+ expired:'此问卷已过期。请询问药剂师。', invalid:'此问卷链接无效。',
+ err:'无法提交。请检查网络连接后重试。', retry:'重试', q:'第 {i} 题，共 {n} 题'}
+};
+
+/* Strings added for the randomised design (v6): the knowledge items beyond
+   the label, the three 1–5 ratings, and the day 5–7 follow-up form. Drafts in
+   every language except English and Arabic, like the rest. */
+const T2 = {
+en:{body1:'Please answer a few short questions about the medicine you just received. You can look at the label on the box. We are testing the label, not you.',
+ q_ind:'What is this medicine for?', q_warn:'Which of these is a warning for this medicine?', none_these:'None of these',
+ q_ease:'How easy was the label on your medicine to read?', ease_lo:'Very hard', ease_hi:'Very easy',
+ q_conf:'How sure are you that you will take this medicine correctly?', conf_lo:'Not sure at all', conf_hi:'Completely sure',
+ q_sat:'How satisfied are you with the label you received?', sat_lo:'Very unsatisfied', sat_hi:'Very satisfied',
+ cat_infection:'An infection', cat_pain:'Pain or fever', cat_pressure:'High blood pressure', cat_diabetes:'Diabetes (high blood sugar)', cat_cholesterol:'High cholesterol', cat_clots:'To prevent blood clots', cat_stomach:'Stomach acid or ulcer', cat_allergy:'Allergy', cat_vitamin:'A vitamin supplement', cat_thyroid:'Thyroid', cat_inflammation:'Inflammation or swelling', cat_breathing:'Asthma or breathing',
+ fu_title:'A quick check on your medicine', fu_body:'A few days ago you received this medicine and took part in a short study. Please answer 3 quick questions (1 minute).',
+ fu_taking:'Are you taking this medicine as written on the label?', fu_t_all:'Yes, every dose', fu_t_missed:'I missed some doses', fu_t_stopped:'I stopped taking it', fu_t_finished:'I have finished the course',
+ fu_missed:'In the last 3 days, how many doses did you miss?', fu_confused:'Was anything about how to take it confusing?', fu_c_lot:'Yes, a lot',
+ fu_done:'Thank you. Your answers have been sent.', fu_closed:'This form is no longer open. Thank you.'},
+ar:{body1:'أجب من فضلك عن بعض الأسئلة القصيرة عن الدواء الذي استلمته الآن. يمكنك النظر إلى الملصق على العلبة. نحن نختبر الملصق، لا نختبرك.',
+ q_ind:'لماذا تستخدم هذا الدواء؟', q_warn:'أي من هذه تحذير خاص بهذا الدواء؟', none_these:'ولا واحد منها',
+ q_ease:'ما مدى سهولة قراءة الملصق الذي على دوائك؟', ease_lo:'صعب جدًا', ease_hi:'سهل جدًا',
+ q_conf:'ما مدى ثقتك أنك ستأخذ هذا الدواء بالطريقة الصحيحة؟', conf_lo:'غير واثق أبدًا', conf_hi:'واثق تمامًا',
+ q_sat:'ما مدى رضاك عن الملصق الذي استلمته؟', sat_lo:'غير راضٍ أبدًا', sat_hi:'راضٍ جدًا',
+ cat_infection:'عدوى (التهاب جرثومي)', cat_pain:'ألم أو حرارة', cat_pressure:'ضغط الدم المرتفع', cat_diabetes:'السكري (ارتفاع السكر)', cat_cholesterol:'الكوليسترول المرتفع', cat_clots:'لمنع تجلط الدم', cat_stomach:'حموضة المعدة أو القرحة', cat_allergy:'الحساسية', cat_vitamin:'مكمل فيتامين', cat_thyroid:'الغدة الدرقية', cat_inflammation:'التهاب أو تورم', cat_breathing:'الربو أو ضيق التنفس',
+ fu_title:'سؤال سريع عن دوائك', fu_body:'استلمت هذا الدواء قبل أيام وشاركت في دراسة قصيرة. أجب من فضلك عن ٣ أسئلة سريعة (دقيقة واحدة).',
+ fu_taking:'هل تأخذ هذا الدواء كما هو مكتوب على الملصق؟', fu_t_all:'نعم، كل جرعة', fu_t_missed:'فاتتني بعض الجرعات', fu_t_stopped:'توقفت عن أخذه', fu_t_finished:'أنهيت المدة كاملة',
+ fu_missed:'في آخر ٣ أيام، كم جرعة فاتتك؟', fu_confused:'هل كان هناك شيء محيّر في طريقة أخذه؟', fu_c_lot:'نعم، كثيرًا',
+ fu_done:'شكرًا لك. تم إرسال إجاباتك.', fu_closed:'هذا النموذج لم يعد متاحًا. شكرًا لك.'},
+ur:{body1:'براہ کرم ابھی ملنے والی دوا کے بارے میں چند مختصر سوالوں کے جواب دیں۔ آپ ڈبے پر لگا لیبل دیکھ سکتے ہیں۔ ہم لیبل کو جانچ رہے ہیں، آپ کو نہیں۔',
+ q_ind:'یہ دوا کس لیے ہے؟', q_warn:'ان میں سے کون سی بات اس دوا کے بارے میں انتباہ ہے؟', none_these:'ان میں سے کوئی نہیں',
+ q_ease:'آپ کی دوا پر لگا لیبل پڑھنا کتنا آسان تھا؟', ease_lo:'بہت مشکل', ease_hi:'بہت آسان',
+ q_conf:'آپ کو کتنا یقین ہے کہ آپ یہ دوا صحیح طریقے سے لیں گے؟', conf_lo:'بالکل یقین نہیں', conf_hi:'پورا یقین',
+ q_sat:'آپ کو ملنے والے لیبل سے آپ کتنے مطمئن ہیں؟', sat_lo:'بالکل مطمئن نہیں', sat_hi:'بہت مطمئن',
+ cat_infection:'انفیکشن', cat_pain:'درد یا بخار', cat_pressure:'ہائی بلڈ پریشر', cat_diabetes:'شوگر (ذیابیطس)', cat_cholesterol:'زیادہ کولیسٹرول', cat_clots:'خون جمنے سے بچاؤ کے لیے', cat_stomach:'معدے کی تیزابیت یا السر', cat_allergy:'الرجی', cat_vitamin:'وٹامن', cat_thyroid:'تھائیرائیڈ', cat_inflammation:'سوزش یا سوجن', cat_breathing:'دمہ یا سانس کی تکلیف',
+ fu_title:'آپ کی دوا کے بارے میں ایک مختصر سوال', fu_body:'چند دن پہلے آپ نے یہ دوا لی اور ایک مختصر مطالعے میں حصہ لیا۔ براہ کرم 3 مختصر سوالوں کے جواب دیں (1 منٹ)۔',
+ fu_taking:'کیا آپ یہ دوا لیبل پر لکھی ہدایت کے مطابق لے رہے ہیں؟', fu_t_all:'جی ہاں، ہر خوراک', fu_t_missed:'کچھ خوراکیں رہ گئیں', fu_t_stopped:'میں نے لینا چھوڑ دیا', fu_t_finished:'میں نے کورس مکمل کر لیا',
+ fu_missed:'پچھلے 3 دنوں میں آپ کی کتنی خوراکیں رہ گئیں؟', fu_confused:'کیا اسے لینے کے طریقے میں کوئی بات الجھن والی تھی؟', fu_c_lot:'ہاں، بہت',
+ fu_done:'شکریہ۔ آپ کے جوابات بھیج دیے گئے ہیں۔', fu_closed:'یہ فارم اب کھلا نہیں ہے۔ شکریہ۔'},
+bn:{body1:'আপনি এইমাত্র যে ওষুধ পেলেন, সে সম্পর্কে কয়েকটি ছোট প্রশ্নের উত্তর দিন। আপনি বাক্সের লেবেলটি দেখতে পারেন। আমরা লেবেলটি পরীক্ষা করছি, আপনাকে নয়।',
+ q_ind:'এই ওষুধটি কীসের জন্য?', q_warn:'এগুলোর মধ্যে কোনটি এই ওষুধের একটি সতর্কতা?', none_these:'এগুলোর কোনোটিই নয়',
+ q_ease:'আপনার ওষুধের লেবেলটি পড়া কতটা সহজ ছিল?', ease_lo:'খুব কঠিন', ease_hi:'খুব সহজ',
+ q_conf:'আপনি কতটা নিশ্চিত যে ওষুধটি সঠিকভাবে খাবেন?', conf_lo:'একদম নিশ্চিত নই', conf_hi:'পুরোপুরি নিশ্চিত',
+ q_sat:'আপনি যে লেবেলটি পেয়েছেন তাতে আপনি কতটা সন্তুষ্ট?', sat_lo:'একদম সন্তুষ্ট নই', sat_hi:'খুব সন্তুষ্ট',
+ cat_infection:'সংক্রমণ', cat_pain:'ব্যথা বা জ্বর', cat_pressure:'উচ্চ রক্তচাপ', cat_diabetes:'ডায়াবেটিস (রক্তে চিনি বেশি)', cat_cholesterol:'উচ্চ কোলেস্টেরল', cat_clots:'রক্ত জমাট বাঁধা প্রতিরোধে', cat_stomach:'পেটের অ্যাসিড বা আলসার', cat_allergy:'অ্যালার্জি', cat_vitamin:'ভিটামিন', cat_thyroid:'থাইরয়েড', cat_inflammation:'প্রদাহ বা ফোলা', cat_breathing:'হাঁপানি বা শ্বাসকষ্ট',
+ fu_title:'আপনার ওষুধ নিয়ে একটি ছোট খোঁজ', fu_body:'কয়েক দিন আগে আপনি এই ওষুধটি পেয়েছেন এবং একটি ছোট গবেষণায় অংশ নিয়েছেন। অনুগ্রহ করে ৩টি ছোট প্রশ্নের উত্তর দিন (১ মিনিট)।',
+ fu_taking:'আপনি কি লেবেলে লেখা অনুযায়ী এই ওষুধটি খাচ্ছেন?', fu_t_all:'হ্যাঁ, প্রতিটি ডোজ', fu_t_missed:'কিছু ডোজ বাদ পড়েছে', fu_t_stopped:'খাওয়া বন্ধ করে দিয়েছি', fu_t_finished:'আমি পুরো কোর্স শেষ করেছি',
+ fu_missed:'গত ৩ দিনে আপনি কয়টি ডোজ বাদ দিয়েছেন?', fu_confused:'এটি কীভাবে খেতে হবে, তা নিয়ে কি কোনো বিভ্রান্তি ছিল?', fu_c_lot:'হ্যাঁ, অনেক',
+ fu_done:'ধন্যবাদ। আপনার উত্তর পাঠানো হয়েছে।', fu_closed:'এই ফর্মটি আর খোলা নেই। ধন্যবাদ।'}, hi:{"body1":"आपको अभी जो दवा मिली है, उसके बारे में कुछ छोटे सवालों के जवाब दें। आप डिब्बे पर लगा लेबल देख सकते हैं। हम लेबल को जाँच रहे हैं, आपको नहीं।","q_ind":"यह दवा किसलिए है?","q_warn":"इनमें से कौन सी बात इस दवा के लिए चेतावनी है?","none_these":"इनमें से कोई नहीं","q_ease":"आपकी दवा का लेबल पढ़ना कितना आसान था?","ease_lo":"बहुत मुश्किल","ease_hi":"बहुत आसान","q_conf":"आपको कितना यक़ीन है कि आप यह दवा सही तरीक़े से लेंगे?","conf_lo":"बिल्कुल यक़ीन नहीं","conf_hi":"पूरा यक़ीन","q_sat":"आपको मिले लेबल से आप कितने संतुष्ट हैं?","sat_lo":"बिल्कुल संतुष्ट नहीं","sat_hi":"बहुत संतुष्ट","cat_infection":"कोई संक्रमण","cat_pain":"दर्द या बुख़ार","cat_pressure":"हाई ब्लड प्रेशर","cat_diabetes":"डायबिटीज़ (ख़ून में ज़्यादा शुगर)","cat_cholesterol":"ज़्यादा कोलेस्ट्रॉल","cat_clots":"ख़ून के थक्के रोकने के लिए","cat_stomach":"पेट का एसिड या अल्सर","cat_allergy":"एलर्जी","cat_vitamin":"विटामिन की ख़ुराक","cat_thyroid":"थायरॉइड","cat_inflammation":"सूजन","cat_breathing":"दमा या साँस की तकलीफ़","fu_title":"आपकी दवा के बारे में एक छोटी जाँच","fu_body":"कुछ दिन पहले आपको यह दवा मिली थी और आपने एक छोटे अध्ययन में भाग लिया था। कृपया 3 छोटे सवालों के जवाब दें (1 मिनट)।","fu_taking":"क्या आप यह दवा लेबल पर लिखे अनुसार ले रहे हैं?","fu_t_all":"हाँ, हर ख़ुराक","fu_t_missed":"मेरी कुछ ख़ुराकें छूट गईं","fu_t_stopped":"मैंने इसे लेना बंद कर दिया","fu_t_finished":"मैंने कोर्स पूरा कर लिया है","fu_missed":"पिछले 3 दिनों में आपकी कितनी ख़ुराकें छूटीं?","fu_confused":"क्या इसे लेने के तरीक़े में कुछ उलझन वाला था?","fu_c_lot":"हाँ, बहुत","fu_done":"धन्यवाद। आपके जवाब भेज दिए गए हैं।","fu_closed":"यह फ़ॉर्म अब खुला नहीं है। धन्यवाद।"}, tl:{"body1":"Pakisagot ang ilang maikling tanong tungkol sa gamot na kakatanggap mo lang. Maaari mong tingnan ang label sa kahon. Ang label ang sinusuri namin, hindi ikaw.","q_ind":"Para saan ang gamot na ito?","q_warn":"Alin sa mga ito ang babala para sa gamot na ito?","none_these":"Wala sa mga ito","q_ease":"Gaano kadaling basahin ang label ng iyong gamot?","ease_lo":"Napakahirap","ease_hi":"Napakadali","q_conf":"Gaano ka kasigurado na tama ang pag-inom mo sa gamot na ito?","conf_lo":"Hindi sigurado","conf_hi":"Lubos na sigurado","q_sat":"Gaano ka nasiyahan sa label na natanggap mo?","sat_lo":"Lubos na hindi nasiyahan","sat_hi":"Lubos na nasiyahan","cat_infection":"Impeksiyon","cat_pain":"Sakit o lagnat","cat_pressure":"Altapresyon","cat_diabetes":"Diabetes (mataas na asukal sa dugo)","cat_cholesterol":"Mataas na kolesterol","cat_clots":"Para maiwasan ang pamumuo ng dugo","cat_stomach":"Asido sa sikmura o ulser","cat_allergy":"Allergy","cat_vitamin":"Suplementong bitamina","cat_thyroid":"Thyroid","cat_inflammation":"Pamamaga","cat_breathing":"Hika o paghinga","fu_title":"Isang mabilis na pagsusuri sa iyong gamot","fu_body":"Ilang araw na ang nakalipas, natanggap mo ang gamot na ito at sumali ka sa isang maikling pag-aaral. Pakisagot ang 3 mabilis na tanong (1 minuto).","fu_taking":"Iniinom mo ba ang gamot na ito ayon sa nakasulat sa label?","fu_t_all":"Oo, bawat dosis","fu_t_missed":"May mga dosis akong nalaktawan","fu_t_stopped":"Itinigil ko na ang pag-inom","fu_t_finished":"Natapos ko na ang gamutan","fu_missed":"Sa nakaraang 3 araw, ilang dosis ang nalaktawan mo?","fu_confused":"May nakalito ba sa iyo tungkol sa kung paano ito inumin?","fu_c_lot":"Oo, marami","fu_done":"Salamat. Naipadala na ang iyong mga sagot.","fu_closed":"Sarado na ang form na ito. Salamat."},
+id:{body1:'Silakan jawab beberapa pertanyaan singkat tentang obat yang baru Anda terima. Anda boleh melihat label pada kotaknya. Yang kami uji adalah labelnya, bukan Anda.',
+ q_ind:'Obat ini untuk apa?', q_warn:'Manakah dari ini yang merupakan peringatan untuk obat ini?', none_these:'Tidak ada',
+ q_ease:'Seberapa mudah label pada obat Anda dibaca?', ease_lo:'Sangat sulit', ease_hi:'Sangat mudah',
+ q_conf:'Seberapa yakin Anda akan meminum obat ini dengan benar?', conf_lo:'Sama sekali tidak yakin', conf_hi:'Sangat yakin',
+ q_sat:'Seberapa puas Anda dengan label yang Anda terima?', sat_lo:'Sangat tidak puas', sat_hi:'Sangat puas',
+ cat_infection:'Infeksi', cat_pain:'Nyeri atau demam', cat_pressure:'Tekanan darah tinggi', cat_diabetes:'Diabetes (gula darah tinggi)', cat_cholesterol:'Kolesterol tinggi', cat_clots:'Mencegah penggumpalan darah', cat_stomach:'Asam lambung atau tukak lambung', cat_allergy:'Alergi', cat_vitamin:'Suplemen vitamin', cat_thyroid:'Tiroid', cat_inflammation:'Peradangan atau bengkak', cat_breathing:'Asma atau sesak napas',
+ fu_title:'Pertanyaan singkat tentang obat Anda', fu_body:'Beberapa hari lalu Anda menerima obat ini dan ikut dalam sebuah studi singkat. Silakan jawab 3 pertanyaan singkat (1 menit).',
+ fu_taking:'Apakah Anda meminum obat ini sesuai yang tertulis di label?', fu_t_all:'Ya, setiap dosis', fu_t_missed:'Ada dosis yang terlewat', fu_t_stopped:'Saya berhenti meminumnya', fu_t_finished:'Saya sudah menghabiskannya sesuai jadwal',
+ fu_missed:'Dalam 3 hari terakhir, berapa dosis yang terlewat?', fu_confused:'Apakah ada yang membingungkan tentang cara meminumnya?', fu_c_lot:'Ya, sangat',
+ fu_done:'Terima kasih. Jawaban Anda sudah terkirim.', fu_closed:'Formulir ini sudah ditutup. Terima kasih.'}, ms:{"body1":"Sila jawab beberapa soalan pendek tentang ubat yang baru anda terima. Anda boleh melihat label pada kotak. Kami menguji label, bukan anda.","q_ind":"Ubat ini untuk apa?","q_warn":"Antara berikut, yang manakah amaran bagi ubat ini?","none_these":"Tiada antara ini","q_ease":"Sejauh manakah label pada ubat anda mudah dibaca?","ease_lo":"Sangat sukar","ease_hi":"Sangat mudah","q_conf":"Sejauh manakah anda yakin akan mengambil ubat ini dengan betul?","conf_lo":"Langsung tidak yakin","conf_hi":"Sangat yakin","q_sat":"Sejauh manakah anda berpuas hati dengan label yang anda terima?","sat_lo":"Sangat tidak berpuas hati","sat_hi":"Sangat berpuas hati","cat_infection":"Jangkitan","cat_pain":"Sakit atau demam","cat_pressure":"Tekanan darah tinggi","cat_diabetes":"Diabetes (gula dalam darah tinggi)","cat_cholesterol":"Kolesterol tinggi","cat_clots":"Untuk mencegah darah beku","cat_stomach":"Asid perut atau ulser","cat_allergy":"Alahan","cat_vitamin":"Suplemen vitamin","cat_thyroid":"Tiroid","cat_inflammation":"Radang atau bengkak","cat_breathing":"Asma atau masalah pernafasan","fu_title":"Semakan ringkas tentang ubat anda","fu_body":"Beberapa hari lalu anda menerima ubat ini dan menyertai satu kajian ringkas. Sila jawab 3 soalan pendek (1 minit).","fu_taking":"Adakah anda mengambil ubat ini seperti yang tertulis pada label?","fu_t_all":"Ya, setiap dos","fu_t_missed":"Saya tertinggal beberapa dos","fu_t_stopped":"Saya sudah berhenti mengambilnya","fu_t_finished":"Saya sudah menghabiskan rawatan","fu_missed":"Dalam 3 hari yang lalu, berapa dos yang anda tertinggal?","fu_confused":"Adakah apa-apa tentang cara mengambilnya yang mengelirukan?","fu_c_lot":"Ya, banyak","fu_done":"Terima kasih. Jawapan anda telah dihantar.","fu_closed":"Borang ini sudah ditutup. Terima kasih."},
+es:{body1:'Responda unas preguntas cortas sobre el medicamento que acaba de recibir. Puede mirar la etiqueta de la caja. Estamos evaluando la etiqueta, no a usted.',
+ q_ind:'¿Para qué es este medicamento?', q_warn:'¿Cuál de estas es una advertencia para este medicamento?', none_these:'Ninguna de estas',
+ q_ease:'¿Qué tan fácil fue leer la etiqueta de su medicamento?', ease_lo:'Muy difícil', ease_hi:'Muy fácil',
+ q_conf:'¿Qué tan seguro está de que tomará este medicamento correctamente?', conf_lo:'Nada seguro', conf_hi:'Totalmente seguro',
+ q_sat:'¿Qué tan satisfecho está con la etiqueta que recibió?', sat_lo:'Muy insatisfecho', sat_hi:'Muy satisfecho',
+ cat_infection:'Una infección', cat_pain:'Dolor o fiebre', cat_pressure:'Presión arterial alta', cat_diabetes:'Diabetes (azúcar alta en sangre)', cat_cholesterol:'Colesterol alto', cat_clots:'Prevenir coágulos de sangre', cat_stomach:'Acidez de estómago o úlcera', cat_allergy:'Alergia', cat_vitamin:'Un suplemento de vitaminas', cat_thyroid:'Tiroides', cat_inflammation:'Inflamación o hinchazón', cat_breathing:'Asma o problemas para respirar',
+ fu_title:'Una consulta rápida sobre su medicamento', fu_body:'Hace unos días recibió este medicamento y participó en un breve estudio. Responda 3 preguntas rápidas (1 minuto).',
+ fu_taking:'¿Está tomando este medicamento como dice la etiqueta?', fu_t_all:'Sí, todas las dosis', fu_t_missed:'Me salté algunas dosis', fu_t_stopped:'Dejé de tomarlo', fu_t_finished:'Ya terminé el tratamiento',
+ fu_missed:'En los últimos 3 días, ¿cuántas dosis se saltó?', fu_confused:'¿Algo sobre cómo tomarlo le resultó confuso?', fu_c_lot:'Sí, mucho',
+ fu_done:'Gracias. Sus respuestas se han enviado.', fu_closed:'Este formulario ya no está abierto. Gracias.'},
+fr:{body1:"Répondez à quelques courtes questions sur le médicament que vous venez de recevoir. Vous pouvez regarder l'étiquette sur la boîte. Nous évaluons l'étiquette, pas vous.",
+ q_ind:'À quoi sert ce médicament ?', q_warn:'Lequel de ces points est une mise en garde pour ce médicament ?', none_these:'Aucun de ces points',
+ q_ease:"L'étiquette de votre médicament était-elle facile à lire ?", ease_lo:'Très difficile', ease_hi:'Très facile',
+ q_conf:'Êtes-vous sûr de bien prendre ce médicament ?', conf_lo:'Pas du tout sûr', conf_hi:'Tout à fait sûr',
+ q_sat:"Êtes-vous satisfait de l'étiquette que vous avez reçue ?", sat_lo:'Pas du tout satisfait', sat_hi:'Très satisfait',
+ cat_infection:'Une infection', cat_pain:'Douleur ou fièvre', cat_pressure:'Hypertension artérielle', cat_diabetes:'Diabète (taux de sucre élevé)', cat_cholesterol:'Cholestérol élevé', cat_clots:'Prévenir les caillots sanguins', cat_stomach:"Acidité de l'estomac ou ulcère", cat_allergy:'Allergie', cat_vitamin:'Un complément vitaminique', cat_thyroid:'Thyroïde', cat_inflammation:'Inflammation ou gonflement', cat_breathing:'Asthme ou difficultés à respirer',
+ fu_title:'Une petite question sur votre médicament', fu_body:'Il y a quelques jours, vous avez reçu ce médicament et participé à une courte étude. Merci de répondre à 3 questions rapides (1 minute).',
+ fu_taking:"Prenez-vous ce médicament comme indiqué sur l'étiquette ?", fu_t_all:'Oui, chaque prise', fu_t_missed:"J'ai oublié certaines prises", fu_t_stopped:"J'ai arrêté de le prendre", fu_t_finished:"J'ai terminé le traitement",
+ fu_missed:'Au cours des 3 derniers jours, combien de prises avez-vous oubliées ?', fu_confused:'Quelque chose dans la façon de le prendre vous a-t-il semblé confus ?', fu_c_lot:'Oui, beaucoup',
+ fu_done:'Merci. Vos réponses ont été envoyées.', fu_closed:"Ce formulaire n'est plus ouvert. Merci."},
+tr:{body1:'Az önce aldığınız ilaçla ilgili birkaç kısa soruyu yanıtlayın. Kutunun üzerindeki etikete bakabilirsiniz. Sizi değil, etiketi değerlendiriyoruz.',
+ q_ind:'Bu ilaç ne için?', q_warn:'Bunlardan hangisi bu ilaçla ilgili bir uyarıdır?', none_these:'Hiçbiri',
+ q_ease:'İlacınızın etiketini okumak ne kadar kolaydı?', ease_lo:'Çok zor', ease_hi:'Çok kolay',
+ q_conf:'Bu ilacı doğru şekilde alacağınızdan ne kadar eminsiniz?', conf_lo:'Hiç emin değilim', conf_hi:'Tamamen eminim',
+ q_sat:'Aldığınız etiketten ne kadar memnunsunuz?', sat_lo:'Hiç memnun değilim', sat_hi:'Çok memnunum',
+ cat_infection:'Enfeksiyon', cat_pain:'Ağrı veya ateş', cat_pressure:'Yüksek tansiyon', cat_diabetes:'Diyabet (yüksek kan şekeri)', cat_cholesterol:'Yüksek kolesterol', cat_clots:'Kan pıhtısını önlemek', cat_stomach:'Mide asidi veya ülser', cat_allergy:'Alerji', cat_vitamin:'Vitamin takviyesi', cat_thyroid:'Tiroid', cat_inflammation:'İltihap veya şişlik', cat_breathing:'Astım veya nefes darlığı',
+ fu_title:'İlacınızla ilgili kısa bir kontrol', fu_body:'Birkaç gün önce bu ilacı aldınız ve kısa bir çalışmaya katıldınız. Lütfen 3 kısa soruyu yanıtlayın (1 dakika).',
+ fu_taking:'Bu ilacı etikette yazdığı gibi alıyor musunuz?', fu_t_all:'Evet, her dozu', fu_t_missed:'Bazı dozları kaçırdım', fu_t_stopped:'Almayı bıraktım', fu_t_finished:'Tedaviyi bitirdim',
+ fu_missed:'Son 3 günde kaç dozu kaçırdınız?', fu_confused:'Nasıl alınacağıyla ilgili kafanızı karıştıran bir şey oldu mu?', fu_c_lot:'Evet, çok',
+ fu_done:'Teşekkürler. Yanıtlarınız gönderildi.', fu_closed:'Bu form artık açık değil. Teşekkürler.'},
+de:{body1:'Bitte beantworten Sie einige kurze Fragen zu dem Arzneimittel, das Sie gerade erhalten haben. Sie dürfen auf das Etikett der Packung schauen. Wir prüfen das Etikett, nicht Sie.',
+ q_ind:'Wofür ist dieses Arzneimittel?', q_warn:'Welcher dieser Hinweise ist eine Warnung für dieses Arzneimittel?', none_these:'Keiner davon',
+ q_ease:'Wie leicht war das Etikett Ihres Arzneimittels zu lesen?', ease_lo:'Sehr schwer', ease_hi:'Sehr leicht',
+ q_conf:'Wie sicher sind Sie, dass Sie dieses Arzneimittel richtig einnehmen werden?', conf_lo:'Gar nicht sicher', conf_hi:'Völlig sicher',
+ q_sat:'Wie zufrieden sind Sie mit dem Etikett, das Sie erhalten haben?', sat_lo:'Sehr unzufrieden', sat_hi:'Sehr zufrieden',
+ cat_infection:'Eine Infektion', cat_pain:'Schmerzen oder Fieber', cat_pressure:'Bluthochdruck', cat_diabetes:'Diabetes (hoher Blutzucker)', cat_cholesterol:'Hohes Cholesterin', cat_clots:'Vorbeugung von Blutgerinnseln', cat_stomach:'Magensäure oder Geschwür', cat_allergy:'Allergie', cat_vitamin:'Ein Vitaminpräparat', cat_thyroid:'Schilddrüse', cat_inflammation:'Entzündung oder Schwellung', cat_breathing:'Asthma oder Atemnot',
+ fu_title:'Eine kurze Nachfrage zu Ihrem Arzneimittel', fu_body:'Vor einigen Tagen haben Sie dieses Arzneimittel erhalten und an einer kurzen Studie teilgenommen. Bitte beantworten Sie 3 kurze Fragen (1 Minute).',
+ fu_taking:'Nehmen Sie dieses Arzneimittel so ein, wie es auf dem Etikett steht?', fu_t_all:'Ja, jede Dosis', fu_t_missed:'Ich habe einige Dosen ausgelassen', fu_t_stopped:'Ich habe es abgesetzt', fu_t_finished:'Ich habe die Behandlung beendet',
+ fu_missed:'Wie viele Dosen haben Sie in den letzten 3 Tagen ausgelassen?', fu_confused:'War etwas an der Einnahme unklar?', fu_c_lot:'Ja, sehr',
+ fu_done:'Danke. Ihre Antworten wurden gesendet.', fu_closed:'Dieses Formular ist nicht mehr geöffnet. Danke.'},
+ja:{body1:'今受け取ったお薬について、いくつかの短い質問に答えてください。箱のラベルを見てもかまいません。テストしているのはラベルで、あなたではありません。',
+ q_ind:'このお薬は何のためのものですか？', q_warn:'このお薬の注意事項はどれですか？', none_these:'どれでもない',
+ q_ease:'お薬のラベルはどのくらい読みやすかったですか？', ease_lo:'とても難しい', ease_hi:'とても簡単',
+ q_conf:'このお薬を正しく飲める自信はどのくらいありますか？', conf_lo:'まったく自信がない', conf_hi:'とても自信がある',
+ q_sat:'受け取ったラベルにどのくらい満足していますか？', sat_lo:'まったく満足していない', sat_hi:'とても満足',
+ cat_infection:'感染症', cat_pain:'痛みや熱', cat_pressure:'高血圧', cat_diabetes:'糖尿病（高血糖）', cat_cholesterol:'高コレステロール', cat_clots:'血栓の予防', cat_stomach:'胃酸過多や胃潰瘍', cat_allergy:'アレルギー', cat_vitamin:'ビタミン剤', cat_thyroid:'甲状腺', cat_inflammation:'炎症や腫れ', cat_breathing:'ぜんそくや息苦しさ',
+ fu_title:'お薬についての簡単な確認', fu_body:'数日前にこのお薬を受け取り、短い調査に参加していただきました。3つの簡単な質問に答えてください（1分）。',
+ fu_taking:'ラベルに書かれたとおりにこのお薬を飲んでいますか？', fu_t_all:'はい、毎回飲んでいる', fu_t_missed:'飲み忘れたことがある', fu_t_stopped:'飲むのをやめた', fu_t_finished:'決められた期間を飲み終えた',
+ fu_missed:'この3日間で何回飲み忘れましたか？', fu_confused:'飲み方についてわかりにくいことはありましたか？', fu_c_lot:'はい、とても',
+ fu_done:'ありがとうございました。回答を送信しました。', fu_closed:'このフォームは終了しました。ありがとうございました。'},
+ru:{body1:'Ответьте, пожалуйста, на несколько коротких вопросов о лекарстве, которое вы только что получили. Можно смотреть на этикетку на упаковке. Мы проверяем этикетку, а не вас.',
+ q_ind:'Для чего это лекарство?', q_warn:'Что из этого является предупреждением для этого лекарства?', none_these:'Ничего из этого',
+ q_ease:'Насколько легко было прочитать этикетку на вашем лекарстве?', ease_lo:'Очень трудно', ease_hi:'Очень легко',
+ q_conf:'Насколько вы уверены, что будете принимать это лекарство правильно?', conf_lo:'Совсем не уверен', conf_hi:'Полностью уверен',
+ q_sat:'Насколько вы довольны полученной этикеткой?', sat_lo:'Совсем не доволен', sat_hi:'Очень доволен',
+ cat_infection:'Инфекция', cat_pain:'Боль или температура', cat_pressure:'Высокое давление', cat_diabetes:'Диабет (высокий сахар в крови)', cat_cholesterol:'Высокий холестерин', cat_clots:'Профилактика тромбов', cat_stomach:'Изжога или язва желудка', cat_allergy:'Аллергия', cat_vitamin:'Витамины', cat_thyroid:'Щитовидная железа', cat_inflammation:'Воспаление или отёк', cat_breathing:'Астма или одышка',
+ fu_title:'Короткий вопрос о вашем лекарстве', fu_body:'Несколько дней назад вы получили это лекарство и приняли участие в коротком исследовании. Пожалуйста, ответьте на 3 коротких вопроса (1 минута).',
+ fu_taking:'Вы принимаете это лекарство так, как написано на этикетке?', fu_t_all:'Да, каждую дозу', fu_t_missed:'Я пропустил несколько доз', fu_t_stopped:'Я перестал его принимать', fu_t_finished:'Я уже закончил курс',
+ fu_missed:'Сколько доз вы пропустили за последние 3 дня?', fu_confused:'Было ли что-то непонятно в том, как его принимать?', fu_c_lot:'Да, очень',
+ fu_done:'Спасибо. Ваши ответы отправлены.', fu_closed:'Эта форма больше не открыта. Спасибо.'},
+zh:{body1:'请回答几个关于您刚领取的药品的简短问题。您可以看药盒上的标签。我们测试的是标签，不是您。',
+ q_ind:'这个药是治什么的？', q_warn:'以下哪一项是这个药的注意事项？', none_these:'以上都不是',
+ q_ease:'您药品上的标签读起来有多容易？', ease_lo:'非常难', ease_hi:'非常容易',
+ q_conf:'您有多大把握能正确服用这个药？', conf_lo:'完全没把握', conf_hi:'非常有把握',
+ q_sat:'您对收到的标签有多满意？', sat_lo:'非常不满意', sat_hi:'非常满意',
+ cat_infection:'感染', cat_pain:'疼痛或发烧', cat_pressure:'高血压', cat_diabetes:'糖尿病（血糖高）', cat_cholesterol:'高胆固醇', cat_clots:'预防血栓', cat_stomach:'胃酸过多或胃溃疡', cat_allergy:'过敏', cat_vitamin:'维生素补充剂', cat_thyroid:'甲状腺', cat_inflammation:'炎症或肿胀', cat_breathing:'哮喘或呼吸困难',
+ fu_title:'关于您药品的简短回访', fu_body:'几天前您领取了这个药，并参加了一项简短的研究。请回答 3 个简短问题（1 分钟）。',
+ fu_taking:'您是否按照标签上写的方法服用这个药？', fu_t_all:'是的，每次都按时服用', fu_t_missed:'漏服了几次', fu_t_stopped:'我已经停药了', fu_t_finished:'我已经服完整个疗程',
+ fu_missed:'最近 3 天，您漏服了几次？', fu_confused:'关于怎么服用，有没有让您困惑的地方？', fu_c_lot:'是的，很困惑',
+ fu_done:'谢谢。您的答案已提交。', fu_closed:'此表格已关闭。谢谢。'}
+};
+Object.keys(T2).forEach(function(l){ T[l] = Object.assign(T[l] || {}, T2[l]); });
+
+/* v6.3: the follow-up asks the translated arm about the patient page and the
+   reminders (the standard arm was given neither). Drafts outside en/ar. */
+const T3 = {
+"en": {
+"fu_body": "A few days ago you received this medicine and took part in a short study. Please answer a few quick questions (1–2 minutes).",
+"fu_page": "Did you open your medicine page from the QR code on the bag?",
+"fu_p_yes": "Yes",
+"fu_p_tried": "I tried, but it did not open",
+"fu_p_no": "No",
+"fu_help": "How much did the page help you understand your medicine?",
+"fu_help_lo": "Not at all",
+"fu_help_hi": "A lot",
+"fu_remind": "On the page, did you turn on reminders for your doses?",
+"fu_r_yes": "Yes",
+"fu_r_no": "No",
+"fu_r_unaware": "I did not see this option"
+},
+"ar": {
+"fu_body": "استلمت هذا الدواء قبل أيام وشاركت في دراسة قصيرة. أجب من فضلك عن بعض الأسئلة السريعة (دقيقة أو دقيقتان).",
+"fu_page": "هل فتحت صفحة دوائك من رمز QR الموجود على الكيس؟",
+"fu_p_yes": "نعم",
+"fu_p_tried": "حاولت ولكنها لم تفتح",
+"fu_p_no": "لا",
+"fu_help": "كم ساعدتك الصفحة على فهم دوائك؟",
+"fu_help_lo": "لم تساعد أبدًا",
+"fu_help_hi": "ساعدت كثيرًا",
+"fu_remind": "هل فعّلت من الصفحة تذكير مواعيد الجرعات؟",
+"fu_r_yes": "نعم",
+"fu_r_no": "لا",
+"fu_r_unaware": "لم أرَ هذا الخيار"
+},
+"ur": {
+"fu_body": "چند دن پہلے آپ نے یہ دوا لی اور ایک مختصر مطالعے میں حصہ لیا۔ براہ کرم چند مختصر سوالوں کے جواب دیں (1 سے 2 منٹ)۔",
+"fu_page": "کیا آپ نے تھیلے پر لگے QR کوڈ سے اپنی دوا کا صفحہ کھولا؟",
+"fu_p_yes": "جی ہاں",
+"fu_p_tried": "کوشش کی لیکن نہیں کھلا",
+"fu_p_no": "نہیں",
+"fu_help": "اس صفحے نے آپ کو اپنی دوا سمجھنے میں کتنی مدد کی؟",
+"fu_help_lo": "بالکل نہیں",
+"fu_help_hi": "بہت زیادہ",
+"fu_remind": "کیا آپ نے صفحے پر خوراک کی یاد دہانی آن کی؟",
+"fu_r_yes": "جی ہاں",
+"fu_r_no": "نہیں",
+"fu_r_unaware": "مجھے یہ آپشن نظر نہیں آیا"
+},
+"bn": {
+"fu_body": "কয়েক দিন আগে আপনি এই ওষুধটি পেয়েছেন এবং একটি ছোট গবেষণায় অংশ নিয়েছেন। অনুগ্রহ করে কয়েকটি ছোট প্রশ্নের উত্তর দিন (১–২ মিনিট)।",
+"fu_page": "আপনি কি ব্যাগের QR কোড থেকে আপনার ওষুধের পাতাটি খুলেছিলেন?",
+"fu_p_yes": "হ্যাঁ",
+"fu_p_tried": "চেষ্টা করেছিলাম, কিন্তু খোলেনি",
+"fu_p_no": "না",
+"fu_help": "পাতাটি আপনার ওষুধ বুঝতে কতটা সাহায্য করেছে?",
+"fu_help_lo": "একদমই না",
+"fu_help_hi": "অনেক",
+"fu_remind": "পাতায় কি আপনি ডোজের রিমাইন্ডার চালু করেছিলেন?",
+"fu_r_yes": "হ্যাঁ",
+"fu_r_no": "না",
+"fu_r_unaware": "আমি এই অপশনটি দেখিনি"
+}, "hi":{"fu_body":"कुछ दिन पहले आपको यह दवा मिली थी और आपने एक छोटे अध्ययन में भाग लिया था। कृपया कुछ छोटे सवालों के जवाब दें (1–2 मिनट)।","fu_page":"क्या आपने थैली पर छपे QR कोड से अपनी दवा का पेज खोला?","fu_p_yes":"हाँ","fu_p_tried":"मैंने कोशिश की, पर वह नहीं खुला","fu_p_no":"नहीं","fu_help":"उस पेज से आपको अपनी दवा समझने में कितनी मदद मिली?","fu_help_lo":"बिल्कुल नहीं","fu_help_hi":"बहुत","fu_remind":"क्या आपने पेज पर अपनी ख़ुराकों के लिए याद-संदेश चालू किए?","fu_r_yes":"हाँ","fu_r_no":"नहीं","fu_r_unaware":"मुझे यह विकल्प नहीं दिखा"}, "tl":{"fu_body":"Ilang araw na ang nakalipas, natanggap mo ang gamot na ito at sumali ka sa isang maikling pag-aaral. Pakisagot ang ilang mabilis na tanong (1–2 minuto).","fu_page":"Binuksan mo ba ang pahina ng iyong gamot mula sa QR code sa supot?","fu_p_yes":"Oo","fu_p_tried":"Sinubukan ko, pero hindi bumukas","fu_p_no":"Hindi","fu_help":"Gaano ka natulungan ng pahina na maunawaan ang iyong gamot?","fu_help_lo":"Hindi talaga","fu_help_hi":"Napakalaki","fu_remind":"Sa pahina, binuksan mo ba ang mga paalala para sa iyong mga dosis?","fu_r_yes":"Oo","fu_r_no":"Hindi","fu_r_unaware":"Hindi ko nakita ang opsiyong ito"},
+"id": {
+"fu_body": "Beberapa hari lalu Anda menerima obat ini dan ikut dalam sebuah studi singkat. Silakan jawab beberapa pertanyaan singkat (1–2 menit).",
+"fu_page": "Apakah Anda membuka halaman obat Anda dari kode QR di kantong?",
+"fu_p_yes": "Ya",
+"fu_p_tried": "Sudah dicoba, tetapi tidak terbuka",
+"fu_p_no": "Tidak",
+"fu_help": "Seberapa besar halaman itu membantu Anda memahami obat Anda?",
+"fu_help_lo": "Sama sekali tidak",
+"fu_help_hi": "Sangat membantu",
+"fu_remind": "Apakah Anda menyalakan pengingat dosis di halaman itu?",
+"fu_r_yes": "Ya",
+"fu_r_no": "Tidak",
+"fu_r_unaware": "Saya tidak melihat pilihan ini"
+}, "ms":{"fu_body":"Beberapa hari lalu anda menerima ubat ini dan menyertai satu kajian ringkas. Sila jawab beberapa soalan pendek (1–2 minit).","fu_page":"Adakah anda membuka halaman ubat anda daripada kod QR pada beg?","fu_p_yes":"Ya","fu_p_tried":"Saya cuba, tetapi halaman itu tidak dapat dibuka","fu_p_no":"Tidak","fu_help":"Sejauh manakah halaman itu membantu anda memahami ubat anda?","fu_help_lo":"Langsung tidak","fu_help_hi":"Sangat banyak","fu_remind":"Di halaman itu, adakah anda menghidupkan peringatan untuk dos anda?","fu_r_yes":"Ya","fu_r_no":"Tidak","fu_r_unaware":"Saya tidak nampak pilihan ini"},
+"es": {
+"fu_body": "Hace unos días recibió este medicamento y participó en un breve estudio. Responda unas preguntas rápidas (1–2 minutos).",
+"fu_page": "¿Abrió la página de su medicamento con el código QR de la bolsa?",
+"fu_p_yes": "Sí",
+"fu_p_tried": "Lo intenté, pero no se abrió",
+"fu_p_no": "No",
+"fu_help": "¿Cuánto le ayudó la página a entender su medicamento?",
+"fu_help_lo": "Nada",
+"fu_help_hi": "Mucho",
+"fu_remind": "¿Activó en la página los recordatorios de las dosis?",
+"fu_r_yes": "Sí",
+"fu_r_no": "No",
+"fu_r_unaware": "No vi esta opción"
+},
+"fr": {
+"fu_body": "Il y a quelques jours, vous avez reçu ce médicament et participé à une courte étude. Merci de répondre à quelques questions rapides (1 à 2 minutes).",
+"fu_page": "Avez-vous ouvert la page de votre médicament avec le code QR du sachet ?",
+"fu_p_yes": "Oui",
+"fu_p_tried": "J'ai essayé, mais elle ne s'est pas ouverte",
+"fu_p_no": "Non",
+"fu_help": "Dans quelle mesure la page vous a-t-elle aidé à comprendre votre médicament ?",
+"fu_help_lo": "Pas du tout",
+"fu_help_hi": "Beaucoup",
+"fu_remind": "Sur la page, avez-vous activé les rappels de prise ?",
+"fu_r_yes": "Oui",
+"fu_r_no": "Non",
+"fu_r_unaware": "Je n'ai pas vu cette option"
+},
+"tr": {
+"fu_body": "Birkaç gün önce bu ilacı aldınız ve kısa bir çalışmaya katıldınız. Lütfen birkaç kısa soruyu yanıtlayın (1–2 dakika).",
+"fu_page": "Poşetteki QR koddan ilacınızın sayfasını açtınız mı?",
+"fu_p_yes": "Evet",
+"fu_p_tried": "Denedim ama açılmadı",
+"fu_p_no": "Hayır",
+"fu_help": "Sayfa ilacınızı anlamanıza ne kadar yardımcı oldu?",
+"fu_help_lo": "Hiç",
+"fu_help_hi": "Çok",
+"fu_remind": "Sayfada doz hatırlatıcılarını açtınız mı?",
+"fu_r_yes": "Evet",
+"fu_r_no": "Hayır",
+"fu_r_unaware": "Bu seçeneği görmedim"
+},
+"de": {
+"fu_body": "Vor einigen Tagen haben Sie dieses Arzneimittel erhalten und an einer kurzen Studie teilgenommen. Bitte beantworten Sie einige kurze Fragen (1–2 Minuten).",
+"fu_page": "Haben Sie die Seite zu Ihrem Arzneimittel über den QR-Code auf der Tüte geöffnet?",
+"fu_p_yes": "Ja",
+"fu_p_tried": "Ich habe es versucht, aber sie ließ sich nicht öffnen",
+"fu_p_no": "Nein",
+"fu_help": "Wie sehr hat Ihnen die Seite geholfen, Ihr Arzneimittel zu verstehen?",
+"fu_help_lo": "Gar nicht",
+"fu_help_hi": "Sehr",
+"fu_remind": "Haben Sie auf der Seite Erinnerungen an Ihre Einnahmen eingeschaltet?",
+"fu_r_yes": "Ja",
+"fu_r_no": "Nein",
+"fu_r_unaware": "Diese Option habe ich nicht gesehen"
+},
+"ja": {
+"fu_body": "数日前にこのお薬を受け取り、短い調査に参加していただきました。いくつかの簡単な質問に答えてください（1〜2分）。",
+"fu_page": "袋のQRコードから、お薬のページを開きましたか？",
+"fu_p_yes": "はい",
+"fu_p_tried": "開こうとしたが、開かなかった",
+"fu_p_no": "いいえ",
+"fu_help": "そのページは、お薬を理解するのにどのくらい役立ちましたか？",
+"fu_help_lo": "まったく役立たなかった",
+"fu_help_hi": "とても役立った",
+"fu_remind": "ページで、服用のリマインダーをオンにしましたか？",
+"fu_r_yes": "はい",
+"fu_r_no": "いいえ",
+"fu_r_unaware": "この機能に気づかなかった"
+},
+"ru": {
+"fu_body": "Несколько дней назад вы получили это лекарство и приняли участие в коротком исследовании. Пожалуйста, ответьте на несколько коротких вопросов (1–2 минуты).",
+"fu_page": "Вы открывали страницу вашего лекарства по QR-коду на пакете?",
+"fu_p_yes": "Да",
+"fu_p_tried": "Пытался, но она не открылась",
+"fu_p_no": "Нет",
+"fu_help": "Насколько эта страница помогла вам понять ваше лекарство?",
+"fu_help_lo": "Совсем не помогла",
+"fu_help_hi": "Очень помогла",
+"fu_remind": "Вы включали на странице напоминания о приёме доз?",
+"fu_r_yes": "Да",
+"fu_r_no": "Нет",
+"fu_r_unaware": "Я не видел такой возможности"
+},
+"zh": {
+"fu_body": "几天前您领取了这个药，并参加了一项简短的研究。请回答几个简短问题（1–2 分钟）。",
+"fu_page": "您是否通过药袋上的二维码打开了您的药品页面？",
+"fu_p_yes": "是",
+"fu_p_tried": "试过，但打不开",
+"fu_p_no": "没有",
+"fu_help": "这个页面对您理解自己的药有多大帮助？",
+"fu_help_lo": "完全没有帮助",
+"fu_help_hi": "帮助很大",
+"fu_remind": "您是否在页面上开启了服药提醒？",
+"fu_r_yes": "是",
+"fu_r_no": "没有",
+"fu_r_unaware": "我没有看到这个选项"
+}
+};
+Object.keys(T3).forEach(function(l){ T[l] = Object.assign(T[l] || {}, T3[l]); });
+
+/* ph6.48: F6 reworded — drafts in every language except English and Arabic, pending validation */
+const T5 = {
+"en": {
+"fu_remind2": "Did reminder messages help you take your doses on time?",
+"fu_r_help": "Yes, they helped",
+"fu_r_nohelp": "I got them, but they did not help",
+"fu_r_none": "I did not get any reminders"
+},
+"ar": {
+"fu_remind2": "هل ساعدتك رسائل التذكير على أخذ جرعاتك في وقتها؟",
+"fu_r_help": "نعم، ساعدتني",
+"fu_r_nohelp": "وصلتني، لكنها لم تساعدني",
+"fu_r_none": "لم تصلني أي رسائل تذكير"
+},
+"ur": {
+"fu_remind2": "کیا یاد دہانی کے پیغامات نے آپ کو وقت پر خوراک لینے میں مدد دی؟",
+"fu_r_help": "جی ہاں، مدد ملی",
+"fu_r_nohelp": "پیغامات ملے، لیکن مدد نہیں ملی",
+"fu_r_none": "مجھے کوئی یاد دہانی نہیں ملی"
+},
+"bn": {
+"fu_remind2": "রিমাইন্ডার বার্তাগুলো কি আপনাকে সময়মতো ডোজ নিতে সাহায্য করেছে?",
+"fu_r_help": "হ্যাঁ, সাহায্য করেছে",
+"fu_r_nohelp": "পেয়েছি, কিন্তু সাহায্য করেনি",
+"fu_r_none": "আমি কোনো রিমাইন্ডার পাইনি"
+}, "hi":{"fu_remind2":"क्या याद-संदेशों से आपको अपनी ख़ुराकें समय पर लेने में मदद मिली?","fu_r_help":"हाँ, मदद मिली","fu_r_nohelp":"मुझे मिले, पर मदद नहीं मिली","fu_r_none":"मुझे कोई याद-संदेश नहीं मिला"}, "tl":{"fu_remind2":"Nakatulong ba ang mga paalala para mainom mo sa oras ang iyong mga dosis?","fu_r_help":"Oo, nakatulong","fu_r_nohelp":"Natanggap ko, pero hindi nakatulong","fu_r_none":"Wala akong natanggap na paalala"},
+"id": {
+"fu_remind2": "Apakah pesan pengingat membantu Anda minum obat tepat waktu?",
+"fu_r_help": "Ya, membantu",
+"fu_r_nohelp": "Saya menerimanya, tetapi tidak membantu",
+"fu_r_none": "Saya tidak menerima pengingat apa pun"
+}, "ms":{"fu_remind2":"Adakah mesej peringatan membantu anda mengambil dos tepat pada masanya?","fu_r_help":"Ya, ia membantu","fu_r_nohelp":"Saya menerimanya, tetapi ia tidak membantu","fu_r_none":"Saya tidak menerima sebarang peringatan"},
+"es": {
+"fu_remind2": "¿Los mensajes de recordatorio le ayudaron a tomar sus dosis a tiempo?",
+"fu_r_help": "Sí, me ayudaron",
+"fu_r_nohelp": "Los recibí, pero no me ayudaron",
+"fu_r_none": "No recibí ningún recordatorio"
+},
+"fr": {
+"fu_remind2": "Les messages de rappel vous ont-ils aidé à prendre vos doses à l'heure ?",
+"fu_r_help": "Oui, ils m'ont aidé",
+"fu_r_nohelp": "Je les ai reçus, mais ils ne m'ont pas aidé",
+"fu_r_none": "Je n'ai reçu aucun rappel"
+},
+"tr": {
+"fu_remind2": "Hatırlatma mesajları dozlarınızı zamanında almanıza yardımcı oldu mu?",
+"fu_r_help": "Evet, yardımcı oldu",
+"fu_r_nohelp": "Aldım ama yardımcı olmadı",
+"fu_r_none": "Hiç hatırlatma almadım"
+},
+"de": {
+"fu_remind2": "Haben Ihnen die Erinnerungsnachrichten geholfen, Ihre Dosen pünktlich einzunehmen?",
+"fu_r_help": "Ja, sie haben geholfen",
+"fu_r_nohelp": "Ich habe sie bekommen, aber sie haben nicht geholfen",
+"fu_r_none": "Ich habe keine Erinnerungen bekommen"
+},
+"ja": {
+"fu_remind2": "リマインダーのメッセージは、時間どおりに服用する助けになりましたか？",
+"fu_r_help": "はい、役に立った",
+"fu_r_nohelp": "受け取ったが、役に立たなかった",
+"fu_r_none": "リマインダーは届かなかった"
+},
+"ru": {
+"fu_remind2": "Помогли ли вам сообщения-напоминания принимать дозы вовремя?",
+"fu_r_help": "Да, помогли",
+"fu_r_nohelp": "Получал(а), но они не помогли",
+"fu_r_none": "Я не получал(а) напоминаний"
+},
+"zh": {
+"fu_remind2": "提醒消息是否帮助您按时服药？",
+"fu_r_help": "是，有帮助",
+"fu_r_nohelp": "收到了，但没有帮助",
+"fu_r_none": "我没有收到任何提醒"
+}
+};
+Object.keys(T5).forEach(function(l){ T[l] = Object.assign(T[l] || {}, T5[l]); });
+
+/* ---------- v7 strings: syrup, drops and topical medicines, and the printed form.
+   Drafts in every language except English and Arabic, pending validation. ---------- */
+const T4 = {
+"en": {
+"q_dose_syrup": "How many mL do you take each time?",
+"units_ml": "mL",
+"units_ml1": "mL",
+"q_dose_drops": "How many drops do you take each time?",
+"units_drop": "drops",
+"units_drop1": "drop",
+"q_dose_topical": "How much do you put on each time?",
+"q_freq_use": "How many times a day do you use it?",
+"q_days_use": "For how many days do you use it?",
+"pf_tick": "Tick one answer for each question.",
+"pf_other": "Other number: ______",
+"pf_days": "______ days"
+},
+"ar": {
+"q_dose_syrup": "كم مل تأخذ في كل مرة؟",
+"units_ml": "مل",
+"units_ml1": "مل",
+"q_dose_drops": "كم نقطة تأخذ في كل مرة؟",
+"units_drop": "نقاط",
+"units_drop1": "نقطة",
+"q_dose_topical": "كم تضع منه في كل مرة؟",
+"q_freq_use": "كم مرة في اليوم تستخدمه؟",
+"q_days_use": "كم يومًا تستمر في استخدامه؟",
+"pf_tick": "اختر إجابة واحدة لكل سؤال.",
+"pf_other": "رقم آخر: ______",
+"pf_days": "______ يوم"
+},
+"ur": {
+"q_dose_syrup": "آپ ہر بار کتنے ملی لیٹر لیتے ہیں؟",
+"units_ml": "ملی لیٹر",
+"units_ml1": "ملی لیٹر",
+"q_dose_drops": "آپ ہر بار کتنے قطرے لیتے ہیں؟",
+"units_drop": "قطرے",
+"units_drop1": "قطرہ",
+"q_dose_topical": "آپ ہر بار کتنی مقدار لگاتے ہیں؟",
+"q_freq_use": "آپ اسے دن میں کتنی بار استعمال کرتے ہیں؟",
+"q_days_use": "آپ اسے کتنے دن استعمال کریں گے؟",
+"pf_tick": "ہر سوال کا ایک جواب منتخب کریں۔",
+"pf_other": "کوئی اور عدد: ______",
+"pf_days": "______ دن"
+},
+"id": {
+"q_dose_syrup": "Berapa mL yang Anda minum setiap kali?",
+"units_ml": "mL",
+"units_ml1": "mL",
+"q_dose_drops": "Berapa tetes yang Anda minum setiap kali?",
+"units_drop": "tetes",
+"units_drop1": "tetes",
+"q_dose_topical": "Berapa banyak yang Anda oleskan setiap kali?",
+"q_freq_use": "Berapa kali sehari Anda menggunakannya?",
+"q_days_use": "Berapa hari Anda menggunakannya?",
+"pf_tick": "Pilih satu jawaban untuk setiap pertanyaan.",
+"pf_other": "Angka lain: ______",
+"pf_days": "______ hari"
+}, "ms":{"q_dose_syrup":"Berapa mL yang anda ambil setiap kali?","units_ml":"mL","units_ml1":"mL","q_dose_drops":"Berapa titis yang anda ambil setiap kali?","units_drop":"titis","units_drop1":"titis","q_dose_topical":"Berapa banyak yang anda sapu setiap kali?","q_freq_use":"Berapa kali sehari anda menggunakannya?","q_days_use":"Berapa hari anda menggunakannya?","pf_tick":"Tandakan satu jawapan bagi setiap soalan.","pf_other":"Nombor lain: ______","pf_days":"______ hari"},
+"bn": {
+"q_dose_syrup": "আপনি প্রতিবার কত মিলি খান?",
+"units_ml": "মিলি",
+"units_ml1": "মিলি",
+"q_dose_drops": "আপনি প্রতিবার কত ফোঁটা খান?",
+"units_drop": "ফোঁটা",
+"units_drop1": "ফোঁটা",
+"q_dose_topical": "আপনি প্রতিবার কতটা লাগান?",
+"q_freq_use": "আপনি দিনে কতবার এটি ব্যবহার করেন?",
+"q_days_use": "আপনি কত দিন এটি ব্যবহার করবেন?",
+"pf_tick": "প্রতিটি প্রশ্নের একটি উত্তর বেছে নিন।",
+"pf_other": "অন্য সংখ্যা: ______",
+"pf_days": "______ দিন"
+}, "hi":{"q_dose_syrup":"आप हर बार कितने mL लेते हैं?","units_ml":"mL","units_ml1":"mL","q_dose_drops":"आप हर बार कितनी बूँदें लेते हैं?","units_drop":"बूँदें","units_drop1":"बूँद","q_dose_topical":"आप हर बार कितनी मात्रा लगाते हैं?","q_freq_use":"आप इसे दिन में कितनी बार इस्तेमाल करते हैं?","q_days_use":"आप इसे कितने दिन तक इस्तेमाल करते हैं?","pf_tick":"हर सवाल के लिए एक जवाब पर निशान लगाएँ।","pf_other":"दूसरी संख्या: ______","pf_days":"______ दिन"}, "tl":{"q_dose_syrup":"Ilang mL ang iniinom mo bawat inom?","units_ml":"mL","units_ml1":"mL","q_dose_drops":"Ilang patak ang iniinom mo bawat inom?","units_drop":"patak","units_drop1":"patak","q_dose_topical":"Gaano karami ang ipinapahid mo bawat gamit?","q_freq_use":"Ilang beses sa isang araw mo ito ginagamit?","q_days_use":"Ilang araw mo ito gagamitin?","pf_tick":"Lagyan ng tsek ang isang sagot sa bawat tanong.","pf_other":"Ibang numero: ______","pf_days":"______ araw"},
+"es": {
+"q_dose_syrup": "¿Cuántos mL toma cada vez?",
+"units_ml": "mL",
+"units_ml1": "mL",
+"q_dose_drops": "¿Cuántas gotas toma cada vez?",
+"units_drop": "gotas",
+"units_drop1": "gota",
+"q_dose_topical": "¿Cuánto se aplica cada vez?",
+"q_freq_use": "¿Cuántas veces al día lo usa?",
+"q_days_use": "¿Durante cuántos días lo usa?",
+"pf_tick": "Marque una respuesta en cada pregunta.",
+"pf_other": "Otro número: ______",
+"pf_days": "______ días"
+},
+"fr": {
+"q_dose_syrup": "Combien de mL prenez-vous à chaque fois ?",
+"units_ml": "mL",
+"units_ml1": "mL",
+"q_dose_drops": "Combien de gouttes prenez-vous à chaque fois ?",
+"units_drop": "gouttes",
+"units_drop1": "goutte",
+"q_dose_topical": "Quelle quantité appliquez-vous à chaque fois ?",
+"q_freq_use": "Combien de fois par jour l'utilisez-vous ?",
+"q_days_use": "Pendant combien de jours l'utilisez-vous ?",
+"pf_tick": "Cochez une réponse pour chaque question.",
+"pf_other": "Autre nombre : ______",
+"pf_days": "______ jours"
+},
+"tr": {
+"q_dose_syrup": "Her seferinde kaç mL alıyorsunuz?",
+"units_ml": "mL",
+"units_ml1": "mL",
+"q_dose_drops": "Her seferinde kaç damla alıyorsunuz?",
+"units_drop": "damla",
+"units_drop1": "damla",
+"q_dose_topical": "Her seferinde ne kadar sürüyorsunuz?",
+"q_freq_use": "Günde kaç kez kullanıyorsunuz?",
+"q_days_use": "Kaç gün kullanıyorsunuz?",
+"pf_tick": "Her soru için bir cevap işaretleyin.",
+"pf_other": "Başka bir sayı: ______",
+"pf_days": "______ gün"
+},
+"de": {
+"q_dose_syrup": "Wie viele mL nehmen Sie jedes Mal ein?",
+"units_ml": "mL",
+"units_ml1": "mL",
+"q_dose_drops": "Wie viele Tropfen nehmen Sie jedes Mal ein?",
+"units_drop": "Tropfen",
+"units_drop1": "Tropfen",
+"q_dose_topical": "Wie viel tragen Sie jedes Mal auf?",
+"q_freq_use": "Wie oft am Tag wenden Sie es an?",
+"q_days_use": "Wie viele Tage wenden Sie es an?",
+"pf_tick": "Kreuzen Sie bei jeder Frage eine Antwort an.",
+"pf_other": "Andere Zahl: ______",
+"pf_days": "______ Tage"
+},
+"ja": {
+"q_dose_syrup": "1回に何mL飲みますか？",
+"units_ml": "mL",
+"units_ml1": "mL",
+"q_dose_drops": "1回に何滴飲みますか？",
+"units_drop": "滴",
+"units_drop1": "滴",
+"q_dose_topical": "1回にどのくらい塗りますか？",
+"q_freq_use": "1日に何回使いますか？",
+"q_days_use": "何日間使いますか？",
+"pf_tick": "各質問に1つ答えを選んでください。",
+"pf_other": "その他の数：______",
+"pf_days": "______ 日"
+},
+"ru": {
+"q_dose_syrup": "Сколько мл вы принимаете за один раз?",
+"units_ml": "мл",
+"units_ml1": "мл",
+"q_dose_drops": "Сколько капель вы принимаете за один раз?",
+"units_drop": "капель",
+"units_drop1": "капля",
+"q_dose_topical": "Сколько вы наносите за один раз?",
+"q_freq_use": "Сколько раз в день вы его используете?",
+"q_days_use": "Сколько дней вы его используете?",
+"pf_tick": "Отметьте один ответ на каждый вопрос.",
+"pf_other": "Другое число: ______",
+"pf_days": "______ дней"
+},
+"zh": {
+"q_dose_syrup": "您每次服用多少毫升？",
+"units_ml": "毫升",
+"units_ml1": "毫升",
+"q_dose_drops": "您每次服用多少滴？",
+"units_drop": "滴",
+"units_drop1": "滴",
+"q_dose_topical": "您每次涂抹多少？",
+"q_freq_use": "您每天使用几次？",
+"q_days_use": "您要使用多少天？",
+"pf_tick": "每个问题请选择一个答案。",
+"pf_other": "其他数字：______",
+"pf_days": "______ 天"
+}
+};
+Object.keys(T4).forEach(function(l){ T[l] = Object.assign(T[l] || {}, T4[l]); });
+
+/* ---------- state ---------- */
+const H = location.hash + '&' + location.search;
+const token  = (H.match(/[#?&]t=([0-9a-f]{20,64})/) || [])[1] || '';
+const fuTok  = (H.match(/[#?&]f=([0-9a-f]{20,64})/) || [])[1] || '';
+const MODE = fuTok ? 'fu' : 'main';
+/* the printed form (for a patient who prefers paper) and entering its answers */
+const PRINT = MODE === 'main' && /[#?&]print=1/.test(H);
+const ENTRY = MODE === 'main' && /[#?&]entry=1/.test(H);
+let S = null;              /* what the server returned */
+let L = 'en';              /* language on screen */
+let stage = 'load';        /* open | fu | done | expired | closed | invalid */
+let screen = 'load';       /* load | intro | q | end */
+let qi = 0;
+let ans = {}, times = {}, shownAt = 0, startedAt = null, langUsed = null, langsSeen = [];
+
+const $ = s => document.querySelector(s);
+const t = (k, v) => { let s = (T[L] && T[L][k]) || T.en[k] || k; if(v) for(const x in v) s = s.replace('{'+x+'}', fmt(v[x])); return s; };
+function fmt(n){
+  if(typeof n !== 'number') return n;
+  try{ return new Intl.NumberFormat(LANGS[L].locale).format(n); }catch(e){ return String(n); }
+}
+function unitFor(q, n){
+  const one = q.unit + '1';
+  return (n <= 1 && T[L] && T[L][one]) ? T[L][one] : t(q.unit);
+}
+function num(n){ return n === 0.5 ? '½' : fmt(n); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+async function rpc(fn, body){
+  const r = await fetch(SB_URL + '/rest/v1/rpc/' + fn, {
+    method:'POST',
+    headers:{'apikey':SB_ANON,'Authorization':'Bearer '+SB_ANON,'Content-Type':'application/json'},
+    body: JSON.stringify(body || {})
+  });
+  const txt = await r.text();
+  let j = null; try{ j = txt ? JSON.parse(txt) : null; }catch(e){}
+  if(!r.ok) throw new Error((j && (j.message || j.hint)) || ('HTTP ' + r.status));
+  return j;
+}
+
+const ICON = {
+  food:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 3v8a3 3 0 0 0 3 3v7M7 3v6M10 3v8a3 3 0 0 1-3 3"/><path d="M17 21V3c-2 1-3 4-3 7s1 4 3 4"/></svg>',
+  empty:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M6.5 6.5l11 11"/></svg>',
+  any:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="9"/></svg>',
+  inf:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 15c-2 0-3-1.3-3-3s1-3 3-3c3 0 6 6 9 6 2 0 3-1.3 3-3s-1-3-3-3c-3 0-6 6-9 6"/></svg>'
+};
+
+/* ---------- the questions ----------
+   One questionnaire, the same in both arms (protocol v8): the four items the
+   label carries — the dose, how many times a day, food, how many days — each
+   asked only where it applies to the prescription (the server decides, before
+   the arm is drawn, and sends the list) — then three 1–5
+   ratings. Oral medicines (tablet, capsule, syrup, drops) or topical ones. */
+function questions(){
+  if(MODE === 'fu') return [
+    {k:'taking', text:'fu_taking', kind:'choice', opts:[['all','fu_t_all'],['missed','fu_t_missed'],['stopped','fu_t_stopped'],['finished','fu_t_finished']]},
+    {k:'missed', text:'fu_missed', kind:'choice', three:true, opts:[['0','0'],['1','1'],['2','2'],['3+','3+']], literal:true},
+    {k:'confused', text:'fu_confused', kind:'choice', three:true, noDk:true, opts:[['no','no'],['little','little'],['lot','fu_c_lot']]}
+  ].concat(!S.page ? [] : [
+    /* translated arm only: the page and the reminders. F5 and F6 follow only a
+       "yes" — the reminders are switched on from the page itself */
+    {k:'page', text:'fu_page', kind:'choice', one:true, noDk:true, opts:[['yes','fu_p_yes'],['tried','fu_p_tried'],['no','fu_p_no']]}
+  ]).concat(S.page && ans.page === 'yes' ? [
+    {k:'page_help', text:'fu_help', kind:'likert', lo:'fu_help_lo', hi:'fu_help_hi'}
+  ] : []).concat(!S.page ? [] : [
+    /* F6 (ph6.48): reminders can start from an email given at the counter, not
+       only from the page, so it is asked of every translated-arm patient and asks
+       what the patient can actually tell — whether they got reminders and if they helped */
+    {k:'remind', text:'fu_remind2', kind:'choice', one:true, opts:[['helped','fu_r_help'],['nohelp','fu_r_nohelp'],['none','fu_r_none']]}
+  ]);
+  const O = S.options || {};
+  /* v8: the four label items (dose, frequency, food, duration); sessions with no list ask the same four */
+  const items = Array.isArray(O.items) ? O.items : ['dose','freq','food','days'];
+  const topical = O.group === 'topical' || S.form === 'topical';
+  const q = [];
+  items.forEach(function(e){
+    if(e === 'ind' && O.ind && O.ind.length)
+      q.push({k:'ind', text:'q_ind', kind:'choice', opts:O.ind.map(c => [c, 'cat_'+c])});
+    else if(e === 'dose'){
+      if(topical && O.dose && O.dose.length)
+        q.push({k:'dose', text:'q_dose_topical', kind:'choice', one:true, opts:O.dose.map(o => [o.id, null, null, (o.t && (o.t[L] || o.t[S.lang] || o.t.en)) || o.id])});
+      else if(S.form === 'syrup')
+        q.push({k:'dose', text:'q_dose_syrup', kind:'num', opts:[2.5,5,10,15], unit:'units_ml', dec:true});
+      else if(S.form === 'drops')
+        q.push({k:'dose', text:'q_dose_drops', kind:'num', opts:[1,2,3,5], unit:'units_drop', dec:false});
+      else {
+        const f = S.form === 'capsule' ? 'capsule' : 'tablet';
+        q.push({k:'dose', text:'q_dose_'+f, kind:'num', opts:[0.5,1,2,3], unit:'units_'+f, dec:true});
+      }
+    }
+    else if(e === 'freq') q.push({k:'freq', text: topical ? 'q_freq_use' : 'q_freq', kind:'num', opts:[1,2,3,4], unit:'times_unit', dec:false});
+    else if(e === 'food') q.push({k:'food', text:'q_food', kind:'choice', opts:[['with','food_with',ICON.food],['empty','food_empty',ICON.empty],['any','food_any',ICON.any]]});
+    else if(e === 'days') q.push({k:'days', text: topical ? 'q_days_use' : 'q_days', kind:'days', unit:'days_unit'});
+    else if(e === 'warn' && O.warn && O.warn.length)
+      q.push({k:'warn', text:'q_warn', kind:'choice', one:true, opts:O.warn.map(o => [o.id, null, null, o.t[L] || o.t[S.lang] || o.t.en]).concat([['none','none_these']])});
+  });
+  q.push({k:'ease', text:'q_ease', kind:'likert', lo:'ease_lo', hi:'ease_hi'});
+  q.push({k:'conf', text:'q_conf', kind:'likert', lo:'conf_lo', hi:'conf_hi'});
+  q.push({k:'sat',  text:'q_sat',  kind:'likert', lo:'sat_lo',  hi:'sat_hi'});
+  return q;
+}
+
+/* ---------- language ---------- */
+function setLang(code){
+  L = LANGS[code] ? code : 'en';
+  const d = LANGS[L].dir;
+  document.documentElement.lang = L; document.documentElement.dir = d;
+  document.body.className = (d === 'rtl' ? 'rtl ' : '') + 'lang-' + L;
+  $('#langName').textContent = LANGS[L].name;
+}
+$('#langBtn').onclick = () => {
+  $('#langList').innerHTML = Object.keys(LANGS).map(c =>
+    '<button type="button" role="radio" aria-checked="'+(c===L)+'" data-l="'+c+'" dir="'+LANGS[c].dir+'">'+esc(LANGS[c].name)+'</button>').join('');
+  $('#langSheet').hidden = false;
+};
+$('#langList').onclick = e => { const b = e.target.closest('[data-l]'); if(!b) return; setLang(b.dataset.l);
+  if(screen === 'q' && langsSeen.indexOf(L) === -1) langsSeen.push(L);
+  $('#langSheet').hidden = true; render(); };
+$('#langClose').onclick = () => { $('#langSheet').hidden = true; };
+
+/* ---------- reading aloud (recorded voice first, device voice second, else no button) ---------- */
+const recorded = {};
+async function loadRecorded(code){
+  if(code in recorded) return;
+  recorded[code] = null;
+  try{
+    const r = await fetch('audio/study/'+code+'/index.json', {cache:'no-store'});
+    if(r.ok){ const j = await r.json(); if(Array.isArray(j)) recorded[code] = new Set(j); }
+  }catch(e){}
+}
+function voiceFor(code){
+  if(typeof speechSynthesis === 'undefined') return null;
+  const want = code.slice(0,2);
+  return (speechSynthesis.getVoices()||[]).find(v => String(v.lang||'').toLowerCase().slice(0,2) === want) || null;
+}
+let player = null;
+function stopSpeaking(){
+  try{ if(typeof speechSynthesis !== 'undefined') speechSynthesis.cancel(); }catch(e){}
+  if(player){ player.pause(); player = null; }
+  const b = $('#sayBtn'); if(b){ b.setAttribute('aria-pressed','false'); b.lastChild.textContent = t('listen'); }
+}
+function canSpeak(key){ return !!((recorded[L] && recorded[L].has(key)) || voiceFor(L)); }
+function speak(key, text){
+  stopSpeaking();
+  const b = $('#sayBtn');
+  const done = () => { if(b){ b.setAttribute('aria-pressed','false'); b.lastChild.textContent = t('listen'); } };
+  if(b){ b.setAttribute('aria-pressed','true'); b.lastChild.textContent = t('stop'); }
+  if(recorded[L] && recorded[L].has(key)){
+    player = new Audio('audio/study/'+L+'/'+key+'.mp3'); player.onended = done; player.onerror = done;
+    player.play().catch(done); return;
+  }
+  const v = voiceFor(L); if(!v){ done(); return; }
+  const u = new SpeechSynthesisUtterance(text); u.voice = v; u.lang = v.lang; u.rate = 0.85; u.onend = done; u.onerror = done;
+  speechSynthesis.speak(u);
+}
+if(typeof speechSynthesis !== 'undefined') speechSynthesis.onvoiceschanged = () => { if(screen !== 'load') render(); };
+
+/* ---------- rendering ---------- */
+function medChip(){
+  const n = S && S.drug ? (S.drug[L] || S.drug.en || '') : '';
+  if(!n) return '';
+  return '<span class="med"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="8" width="18" height="8" rx="4"/><path d="M12 8v8"/></svg>'+
+         esc(t('med'))+': '+esc(n)+'</span>';
+}
+function setBar(){
+  const qn = (S && stage !== 'done') ? questions().length + ((MODE === 'fu' && S.page && ans.page === undefined) ? 1 : 0) : 1;
+  const frac = screen === 'q' ? qi / qn : (screen === 'end' ? 1 : 0);
+  $('#barFill').style.width = Math.round(frac*100) + '%';
+  $('#partTag').textContent = '';
+}
+function foot(back, next, enabled){
+  $('#foot').hidden = false;
+  const bb = $('#backBtn'), nb = $('#nextBtn');
+  bb.hidden = !back; bb.textContent = back || '';
+  nb.textContent = next; nb.disabled = !enabled;
+}
+function noFoot(){ $('#foot').hidden = true; }
+
+function render(){
+  if(screen === 'load') return;
+  stopSpeaking();
+  setBar();
+  $('#langBtn').hidden = !(screen === 'intro' || screen === 'q');
+  const m = $('#main');
+
+  if(screen === 'end'){
+    noFoot();
+    const ok = stage === 'done';
+    const title = ok ? (MODE === 'fu' ? t('hb_title') : t('done_title')) : t(stage === 'closed' ? 'fu_closed' : stage);
+    const body  = ok ? (MODE === 'fu' ? t('fu_done') : t('done_body')) : '';
+    m.innerHTML = '<div class="card hero"><div class="mark'+(ok?' ok':'')+'">'+
+      (ok ? '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'
+          : '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>')+
+      '</div><h1>'+esc(title)+'</h1>'+(body?'<p class="lead">'+esc(body)+'</p>':'')+'</div>';
+    /* on the study iPad this page runs inside the kiosk screen: tell it the
+       patient has reached the end, so it can go back to waiting */
+    if(window.parent !== window){
+      try{ window.parent.postMessage({adwStudy:'end', ok:ok, token:token}, location.origin); }catch(e){}
+    }
+    return;
+  }
+
+  if(screen === 'intro'){
+    const title = MODE === 'fu' ? t('fu_title') : t('title1');
+    const body  = MODE === 'fu' ? t('fu_body')  : t('body1');
+    const key = MODE === 'fu' ? 'intro_fu' : 'intro1';
+    m.innerHTML = '<div class="card hero">'+
+      '<div class="mark"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+
+        '<rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div>'+
+      '<div style="margin-bottom:10px">'+medChip()+'</div>'+
+      '<h1>'+esc(title)+'</h1><p class="lead">'+esc(body)+'</p>'+
+      sayButton(key)+'</div>';
+    bindSay(key, title + '. ' + body);
+    foot(null, t('start'), true);
+    return;
+  }
+
+  const qs = questions(), q = qs[qi];
+  const val = ans[q.k];
+  const qtext = t(q.text);
+  /* until F4 is answered, F5 (which follows a yes) is counted */
+  const pending = MODE === 'fu' && S.page && ans.page === undefined;
+  const shownN = qs.length + (pending ? 1 : 0);
+  let html = '<div class="card"><div class="kicker"><span>'+esc(t('q',{i:qi+1, n:shownN}))+'</span>'+medChip()+'</div>'+
+             '<div class="qhead"><h1>'+esc(qtext)+'</h1>'+sayButton(q.k)+'</div>';
+  if(q.kind === 'num'){
+    const isOther = (val !== undefined && val !== 'dk' && val !== null && q.opts.indexOf(val) === -1) || ans['_other_'+q.k];
+    html += '<div class="opts">'+q.opts.map(n =>
+      '<button type="button" class="opt big" role="radio" aria-checked="'+(val===n && !ans['_other_'+q.k])+'" data-v="'+n+'"><span class="n">'+num(n)+'</span><span>'+esc(unitFor(q,n))+'</span></button>').join('')+
+      '<button type="button" class="opt" role="radio" aria-checked="'+(!!isOther)+'" data-other="1"><span class="ic">#</span>'+esc(t('other_num'))+'</button>'+
+      '<button type="button" class="opt dk" role="radio" aria-checked="'+(val==='dk')+'" data-v="dk">'+esc(t('dk'))+'</button></div>'+
+      padHtml(q, !isOther, isOther && typeof val === 'number' ? val : null);
+  } else if(q.kind === 'days'){
+    const typed = typeof val === 'number' ? val : null;
+    html += padHtml(q, false, typed, true)+
+      '<div class="opts" style="margin-top:14px">'+
+      '<button type="button" class="opt" role="radio" aria-checked="'+(val==='ongoing')+'" data-v="ongoing"><span class="ic">'+ICON.inf+'</span>'+esc(t('ongoing'))+'</button>'+
+      '<button type="button" class="opt dk" role="radio" aria-checked="'+(val==='dk')+'" data-v="dk">'+esc(t('dk'))+'</button></div>';
+  } else if(q.kind === 'likert'){
+    html += '<div class="likert" role="radiogroup">'+[1,2,3,4,5].map(n =>
+      '<button type="button" class="lk" role="radio" aria-checked="'+(val===n)+'" data-v="'+n+'"><b>'+fmt(n)+'</b></button>').join('')+'</div>'+
+      '<div class="lkEnds"><span>'+esc(t(q.lo))+'</span><span>'+esc(t(q.hi))+'</span></div>';
+  } else {
+    const cls = q.one ? ' one' : q.three ? ' three' : '';
+    html += '<div class="opts'+cls+'">'+q.opts.map(o =>
+      '<button type="button" class="opt" role="radio" aria-checked="'+(val===o[0])+'" data-v="'+esc(o[0])+'">'+(o[2]?'<span class="ic">'+o[2]+'</span>':'')+
+      '<span>'+esc(o[3] || (q.literal ? o[1] : t(o[1])))+'</span></button>').join('')+
+      ((q.opt || q.noDk) ? '' : '<button type="button" class="opt dk" role="radio" aria-checked="'+(val==='dk')+'" data-v="dk">'+esc(t('dk'))+'</button>')+'</div>';
+  }
+  html += '<div class="err" id="err" hidden></div></div>';
+  m.innerHTML = html;
+
+  const spoken = [qtext].concat(
+    q.kind === 'num' ? q.opts.map(n => num(n)+' '+unitFor(q,n)).concat([t('other_num'), t('dk')]) :
+    q.kind === 'days' ? [t('type_num'), t('ongoing'), t('dk')] :
+    q.kind === 'likert' ? ['1 '+t(q.lo), '5 '+t(q.hi)] :
+    q.opts.map(o => o[3] || (q.literal ? o[1] : t(o[1]))).concat((q.opt || q.noDk) ? [] : [t('dk')])).join('. ');
+  bindSay(q.k, spoken);
+
+  m.querySelectorAll('.opts .opt, .likert .lk').forEach(b => b.onclick = () => {
+    if(b.dataset.other){ ans['_other_'+q.k] = true; ans[q.k] = undefined; render(); const p = $('#pad'); if(p) p.scrollIntoView({block:'nearest'}); return; }
+    let v = b.dataset.v;
+    if((q.kind === 'num' && v !== 'dk') || q.kind === 'likert') v = parseFloat(v);
+    delete ans['_other_'+q.k];
+    ans[q.k] = v; times[q.k] = (times[q.k]||0) + (Date.now()-shownAt); shownAt = Date.now();
+    render();
+  });
+  bindPad(q);
+  const last = qi === qs.length - 1 && !pending;
+  const answered = ans[q.k] !== undefined && ans[q.k] !== null && ans[q.k] !== '';
+  foot(t('back'), last ? t('send') : (q.opt && !answered ? t('skip') : t('next')), q.opt || answered);
+}
+
+function sayButton(key){
+  return '<button type="button" class="say" id="sayBtn" aria-pressed="false" data-key="'+key+'"'+(canSpeak(key)?'':' hidden')+'>'+
+    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>'+
+    '<span>'+esc(t('listen'))+'</span></button>';
+}
+function bindSay(key, text){
+  const b = $('#sayBtn'); if(!b) return;
+  b.onclick = () => { if(b.getAttribute('aria-pressed') === 'true') stopSpeaking(); else speak(key, text); };
+}
+
+function padHtml(q, hidden, value, always){
+  const keys = ['1','2','3','4','5','6','7','8','9', q.dec ? '.' : '', '0', '⌫'];
+  const shown = value === null || value === undefined ? '' : String(value);
+  return '<div class="padWrap" id="pad"'+(hidden && !always ? ' hidden' : '')+'>'+
+    '<div class="readout'+(shown?'':' empty')+'" id="padRead" data-raw="'+esc(shown)+'">'+(shown ? esc(fmtTyped(shown)) : esc(t('type_num')))+
+      (shown ? ' <span class="u">'+esc(unitFor(q, parseFloat(shown)))+'</span>' : '')+'</div>'+
+    '<div class="pad">'+keys.map(k => '<button type="button" data-k="'+k+'"'+(k?'':' disabled')+'>'+k+'</button>').join('')+'</div></div>';
+}
+function fmtTyped(raw){
+  const n = parseFloat(raw);
+  if(isNaN(n)) return raw;
+  return raw.endsWith('.') ? fmt(n)+'.' : (n === 0.5 ? '½' : fmt(n));
+}
+function bindPad(q){
+  const pad = $('#pad'); if(!pad) return;
+  pad.querySelectorAll('.pad button').forEach(b => b.onclick = () => {
+    const r = $('#padRead'); let raw = r.dataset.raw || '';
+    const k = b.dataset.k;
+    if(k === '⌫') raw = raw.slice(0,-1);
+    else if(k === '.'){ if(!raw.includes('.')) raw = (raw || '0') + '.'; }
+    else if(raw.replace('.','').length < 3) raw = (raw === '0' ? '' : raw) + k;
+    const n = parseFloat(raw);
+    const max = q.k === 'days' ? 365 : q.k === 'freq' ? 24 : 20;
+    if(!isNaN(n) && n > max) return;
+    if(q.kind === 'num') ans['_other_'+q.k] = true;
+    ans[q.k] = (!raw || isNaN(n) || n <= 0) ? undefined : n;
+    times[q.k] = (times[q.k]||0) + (Date.now()-shownAt); shownAt = Date.now();
+    render();
+    const r2 = $('#padRead'); if(r2 && raw){ r2.dataset.raw = raw; r2.firstChild.textContent = fmtTyped(raw) + ' '; }
+  });
+}
+
+/* ---------- navigation ---------- */
+$('#nextBtn').onclick = async () => {
+  if(screen === 'intro'){
+    screen = 'q'; qi = 0; ans = {}; times = {}; shownAt = Date.now(); startedAt = new Date().toISOString(); langUsed = L; langsSeen = [L];
+    render(); window.scrollTo(0,0); return;
+  }
+  const qs = questions();
+  if(qi < qs.length - 1){ qi++; shownAt = Date.now(); render(); window.scrollTo(0,0); return; }
+  await send();
+};
+$('#backBtn').onclick = () => {
+  if(screen === 'q' && qi > 0){ qi--; shownAt = Date.now(); render(); return; }
+  if(screen === 'q'){ screen = 'intro'; render(); }
+};
+
+async function send(){
+  const nb = $('#nextBtn'); nb.disabled = true;
+  /* lang = the language the questionnaire was started in; langs = every language shown while answering */
+  const out = {lang: ENTRY ? S.lang : (langUsed || L), langs: ENTRY ? [S.lang] : langsSeen.slice(),
+               started_at: startedAt, ms: ENTRY ? {} : times, v: VERSION, mode: ENTRY ? 'paper' : 'tablet'};
+  questions().forEach(q => { const v = ans[q.k]; out[q.k] = (v === undefined) ? null : v; });
+  try{
+    if(MODE === 'fu') await rpc('study_fu_submit', {p_token: fuTok, p_answers: out});
+    else await rpc('study_answer', {p_token: token, p_answers: out});
+    stage = 'done'; screen = 'end';
+    render(); window.scrollTo(0,0);
+  }catch(e){
+    const box = $('#err'); if(box){ box.hidden = false; box.textContent = t('err'); }
+    nb.disabled = false; nb.textContent = t('retry');
+    /* the server may already hold the answers (a lost reply): re-read rather than resend */
+    try{
+      const g = MODE === 'fu' ? await rpc('study_fu_get', {p_token: fuTok}) : await rpc('study_get', {p_token: token});
+      if(g.stage === 'done'){ stage = 'done'; screen = 'end'; render(); }
+    }catch(_){}
+  }
+}
+
+/* ---------- the printed form ----------
+   The same questions, in the same order and the patient's language, with a box
+   to tick for each answer. The intern then enters the ticks with ?entry=1. */
+function renderPrint(){
+  const box = '<span class="pb"></span>';
+  const qs = questions();
+  const row = (label) => '<div class="po">'+box+'<span>'+esc(label)+'</span></div>';
+  let h = '<div class="pf" dir="'+LANGS[L].dir+'"><div class="ph"><h1>'+esc(t('title1'))+'</h1>'+
+          '<div class="pm">'+medChip()+'</div><p>'+esc(t('body1'))+' '+esc(t('pf_tick'))+'</p></div>';
+  qs.forEach(function(q, i){
+    h += '<div class="pq"><div class="pt"><b>'+fmt(i+1)+'.</b> '+esc(t(q.text))+'</div><div class="pos">';
+    if(q.kind === 'num'){
+      h += q.opts.map(n => row(num(n)+' '+unitFor(q,n))).join('') + row(t('pf_other')) + row(t('dk'));
+    } else if(q.kind === 'days'){
+      h += row(t('pf_days')) + row(t('ongoing')) + row(t('dk'));
+    } else if(q.kind === 'likert'){
+      h += '<div class="pl">'+[1,2,3,4,5].map(n => '<span>'+box+' '+fmt(n)+'</span>').join('')+'</div>'+
+           '<div class="pe"><span>1 = '+esc(t(q.lo))+'</span><span>5 = '+esc(t(q.hi))+'</span></div>';
+    } else {
+      h += q.opts.map(o => row(o[3] || (q.literal ? o[1] : t(o[1])))).join('') + ((q.opt || q.noDk) ? '' : row(t('dk')));
+    }
+    h += '</div></div>';
+  });
+  h += '<div class="pfoot">Form '+esc(token.slice(-6).toUpperCase())+' · ____ / ____ / ________ · Study code: ____________</div></div>';
+  const st = document.createElement('style');
+  st.textContent = '@page{size:A4;margin:12mm}body{background:#fff!important}header,#foot,#langSheet,.bar{display:none!important}'+
+    '.pf{max-width:760px;margin:0 auto;font-size:15px;line-height:1.45;color:#1f2420}.ph h1{font-size:22px;margin:0 0 6px}.ph p{margin:6px 0 10px}'+
+    '.pq{border-top:1px solid #ccc;padding:8px 0;break-inside:avoid}.pt{font-size:16px;margin-bottom:6px}'+
+    '.pos{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px}.po{display:flex;gap:8px;align-items:flex-start}'+
+    '.pb{display:inline-block;width:15px;height:15px;border:1.6px solid #333;border-radius:3px;flex:0 0 auto;margin-top:3px}'+
+    '.pl{grid-column:1/-1;display:flex;gap:26px}.pl span{display:flex;gap:6px;align-items:center}.pe{grid-column:1/-1;display:flex;justify-content:space-between;font-size:13px;color:#555}'+
+    '.pfoot{margin-top:14px;border-top:1px solid #ccc;padding-top:8px;font-size:12px;color:#555;direction:ltr}';
+  document.head.appendChild(st);
+  noFoot();
+  $('#main').innerHTML = h;
+  setTimeout(function(){ try{ window.print(); }catch(e){} }, 400);
+}
+function entryBanner(){
+  const b = document.createElement('div');
+  b.style.cssText = 'background:#9A7550;color:#fff;padding:8px 14px;font:600 14px/1.4 system-ui,sans-serif;text-align:center';
+  b.textContent = 'Entering answers from the printed form (' + ((LANGS[S.lang]||{}).name || S.lang) + '). Copy each tick exactly; leave unticked questions as "I don’t know".';
+  document.body.insertBefore(b, document.body.firstChild);
+}
+
+/* ---------- start ---------- */
+(async function boot(){
+  if(!token && !fuTok){ stage = 'invalid'; screen = 'end'; setLang('en'); render(); return; }
+  try{
+    S = MODE === 'fu' ? await rpc('study_fu_get', {p_token: fuTok}) : await rpc('study_get', {p_token: token});
+  }catch(e){ S = null; }
+  if(!S){ stage = 'invalid'; screen = 'end'; setLang('en'); render(); return; }
+  stage = S.stage;
+  if(PRINT && stage === 'open'){ setLang(S.lang || 'en'); renderPrint(); return; }
+  /* staff type the paper answers in English; the record keeps the form's language */
+  setLang(ENTRY ? 'en' : (S.lang || 'en'));
+  if(ENTRY && stage === 'open') entryBanner();
+  screen = (stage === 'open' || stage === 'fu') ? 'intro' : 'end';
+  await Promise.all(Object.keys(LANGS).map(loadRecorded));
+  render();
+})();
+</script>
+</body>
+</html>

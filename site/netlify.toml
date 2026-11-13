@@ -1,0 +1,63 @@
+[build]
+  publish = "."
+
+# Security headers for every page
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+# App pages (staff, guest, study) stay out of Google search
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-cache"
+[[headers]]
+  for = "/patient.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-cache"
+[[headers]]
+  for = "/study.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/stop.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+# Teaching films: cache for a long time
+[[headers]]
+  for = "/films/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+# Clean addresses: adwiyati.com/about -> about.html
+[[redirects]]
+  from = "/home"
+  to = "/home.html"
+  status = 200
+[[redirects]]
+  from = "/pharmacies"
+  to = "/pharmacies.html"
+  status = 200
+[[redirects]]
+  from = "/languages"
+  to = "/languages.html"
+  status = 200
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
+[[redirects]]
+  from = "/login"
+  to = "/login.html"
+  status = 200
+[[redirects]]
+  from = "/staff"
+  to = "/index.html?staff"
+  status = 302

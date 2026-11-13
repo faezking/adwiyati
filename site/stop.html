@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>التذكيرات — أدويتي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* One job, one screen: opened from the foot of a reminder email by someone
+     who wants the messages to stop and wants that confirmed at a glance.
+     ph7.1: approved identity - pharmacist seal, olive and saffron. */
+  :root{--olive:#2F4A2A;--leaf:#4E6B3F;--saffron:#E08A1E;--amber:#B4531F;--sand:#F4EBDA;--plaster:#FBF8F1;--ink:#1C2B1A;--soft:#5A6553;--line:#ECE6D8}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+       background:var(--plaster);color:var(--ink);font-family:'IBM Plex Sans Arabic','Inter',system-ui,sans-serif;padding:24px 16px}
+  .wrap{width:100%;max-width:380px;text-align:center}
+  .seal{width:64px;height:64px;margin:0 auto 18px;display:block}
+  .card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:32px 26px 28px;
+        box-shadow:0 1px 2px rgba(40,50,25,.04),0 22px 44px -30px rgba(40,50,25,.35)}
+  .icon{width:52px;height:52px;border-radius:999px;display:flex;align-items:center;justify-content:center;
+        margin:0 auto 16px;font:700 22px Inter,sans-serif}
+  .icon.ok{background:#EEF2E8;color:var(--leaf)}
+  .icon.err{background:#FBEBD0;color:var(--amber)}
+  h1{font:700 19px/1.5 'Alexandria','IBM Plex Sans Arabic',sans-serif;margin:0 0 8px;color:var(--ink)}
+  p{font-size:15px;line-height:1.85;color:var(--soft);margin:0}
+  .en{direction:ltr;font-family:Inter,system-ui,sans-serif;font-size:13.5px;line-height:1.6;color:#7A8270;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+  .en b{display:block;color:var(--ink);font-weight:600;font-size:14px}
+  .sp{width:26px;height:26px;border:3px solid var(--line);border-top-color:var(--saffron);
+      border-radius:50%;margin:0 auto 16px;animation:s .8s linear infinite}
+  .foot{margin-top:16px;font:600 11px Inter,sans-serif;letter-spacing:.14em;color:#9AA190}
+  @keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<svg class="seal" viewBox="0 0 120 120" aria-hidden="true"><defs><path id="arc" d="M60 60 m-43 0 a43 43 0 1 1 86 0 a43 43 0 1 1 -86 0"/></defs><circle cx="60" cy="60" r="56" fill="#2F4A2A"/><circle cx="60" cy="60" r="34" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1"/><text direction="ltr" style="direction:ltr;unicode-bidi:normal" font-family="Inter, sans-serif" font-weight="600" font-size="10.5" letter-spacing="2.2" fill="#fff"><textPath href="#arc" startOffset="0" textLength="262" lengthAdjust="spacing">ADWIYATI · PHARMACY LABELS ·</textPath></text><g transform="rotate(-45 60 60)"><rect x="38" y="49" width="44" height="22" rx="11" fill="#fff"/><path d="M60 49 h11 a11 11 0 0 1 0 22 h-11z" fill="#E08A1E"/></g></svg>
+<div class="card" id="c">
+  <div class="sp"></div>
+  <h1>لحظة من فضلك…</h1>
+  <p>جارٍ إيقاف التذكيرات.</p>
+  <p class="en"><b>One moment…</b>Stopping your reminders.</p>
+</div>
+<div class="foot">ADWIYATI</div>
+</div>
+
+<script>
+/* The anon key identifies the project, not a person. The token in the link
+   is what authorises the change, and it only ever cancels reminders — it
+   cannot read anything. */
+var SB_URL  = 'https://eupjgrhairixgmjwftnq.supabase.co';
+var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1cGpncmhhaXJpeGdtandmdG5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2Mjk1ODcsImV4cCI6MjEwMjIwNTU4N30.cv1nciUDlVFbuOTRecwHkgIodHgP5iZE8UnsPEW5ROI';
+
+var token = new URLSearchParams(location.search).get('t')
+         || new URLSearchParams(location.search).get('stop') || '';
+
+function show(kind, glyph, title, text, enTitle, enText){
+  document.getElementById('c').innerHTML =
+    '<div class="icon ' + kind + '">' + glyph + '</div>' +
+    '<h1>' + title + '</h1><p>' + text + '</p>' +
+    '<p class="en"><b>' + enTitle + '</b>' + enText + '</p>';
+}
+
+if(!token){
+  show('err','!','رابط غير مكتمل',
+       'افتح الرابط كما وصلك في الرسالة. إن استمرت التذكيرات، تواصل مع الصيدلية.',
+       'Incomplete link','Open the link exactly as it came in the message. If the reminders continue, contact the pharmacy.');
+}else{
+  fetch(SB_URL + '/rest/v1/rpc/cancel_reminders_by_token', {
+    method:'POST',
+    headers:{ apikey:SB_ANON, Authorization:'Bearer '+SB_ANON,
+              'Content-Type':'application/json' },
+    body: JSON.stringify({ p_token: token })
+  })
+  .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+  .then(function(n){
+    if(n > 0){
+      show('ok','&#10003;','تم إيقاف التذكيرات',
+           'لن تصلك تذكيرات أخرى عن هذه الوصفة.',
+           'Reminders stopped','You will not get any more reminders for this prescription.');
+    }else{
+      /* Nothing scheduled is not a failure, and saying "error" here would
+         worry someone who has already got what they asked for. */
+      show('ok','&#10003;','لا توجد تذكيرات',
+           'لم تكن هناك تذكيرات مجدولة لهذه الوصفة.',
+           'No reminders','There were no reminders scheduled for this prescription.');
+    }
+  })
+  .catch(function(){
+    show('err','!','تعذّر تنفيذ الطلب',
+         'لم يعمل هذا الرابط الآن. إن استمرت التذكيرات، تواصل مع الصيدلية.',
+         'Could not complete','This link did not work just now. If the reminders continue, contact the pharmacy.');
+  });
+}
+</script>
+</body>
+</html>

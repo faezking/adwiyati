@@ -1,0 +1,8 @@
+Copyright (c) 2026 Adwiyati. All rights reserved.
+Software copyright registered with the Saudi Authority for Intellectual Property
+(SAIP), registration No. 26-12-101400831, 25 Aug 2026.
+
+This source code is shared with the MEDATHON 2026 judging committee for the
+purpose of evaluation and verification only. No licence is granted to copy,
+modify, distribute or use it for any other purpose without written permission
+from the Adwiyati team (adwiyatii@gmail.com).
